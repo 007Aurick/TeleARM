@@ -1,6 +1,6 @@
 # 🦾 TeleARM — Autonomous Perception-Guided Mobile Manipulator
 
-> An autonomous mobile robot that detects objects with a camera, navigates to them while avoiding obstacles with LiDAR, and picks them up using a mounted robotic arm — all visualized live in RViz2.
+> An autonomous mobile robot that detects objects with a camera, navigates to them while avoiding obstacles with a depth camera, and picks them up using a mounted robotic arm — all visualized live in RViz2.
 
 ![ROS2](https://img.shields.io/badge/ROS2-Humble-blue?logo=ros&logoColor=white)
 ![Gazebo](https://img.shields.io/badge/Gazebo-Simulation-orange?logo=gazebo&logoColor=white)
@@ -17,7 +17,7 @@
 **TeleARM** combines perception, autonomous navigation, and manipulation into one working robot:
 
 - 📷 **Camera-based object detection** — spot a target object in the environment
-- 🗺️ **Autonomous navigation** using `Nav2` + LiDAR, driving to the detected object while avoiding obstacles
+- 🗺️ **Autonomous navigation** using `Nav2` + Depth Camera, driving to the detected object while avoiding obstacles
 - 🦾 **Automatic pick-and-place** using a mounted robotic arm, triggered on arrival
 
 No keyboard, no manual driving, no manual goal-setting — the robot decides where to go and what to do based on what it sees.
@@ -28,11 +28,11 @@ No keyboard, no manual driving, no manual goal-setting — the robot decides whe
 
 - 📷 Real-time object detection from a mounted RGB(-D) camera
 - 📍 Detected object position converted into a navigation goal in the map frame
-- 🧭 Fully autonomous point-to-point navigation via `Nav2`, using LiDAR-based obstacle avoidance
+- 🧭 Fully autonomous point-to-point navigation via `Nav2`, using Depth Camera-based obstacle avoidance
 - 🌲 Full TF tree: `map → odom → base_link → arm_base_link → ... → gripper`
 - 🦾 Fixed-mount robotic arm riding on top of the mobile base
 - 🤖 Automatic pick-and-place sequence triggered on goal arrival (no keypress needed)
-- 🖥️ Fully visualized in RViz2 — robot model, TF frames, LiDAR scan, occupancy grid map, camera feed, and detected object markers
+- 🖥️ Fully visualized in RViz2 — robot model, TF frames, Depth Camera scan, occupancy grid map, camera feed, and detected object markers
 
 ---
 
@@ -46,7 +46,7 @@ Position ──► Transformed into Map Frame
 Goal Pose ──► Nav2 ──► Path Planning + Obstacle Avoidance
 │ ▲
 │ │
-│ 📡 LiDAR Scan
+│ 📡 Depth Camera Scan
 ▼
 Robot Drives Autonomously to Object
 │
@@ -57,7 +57,7 @@ Goal Reached ──► Arm Node ──► Pick-and-Place Sequence
 🖥️ RViz2 renders everything together
 
 - **Perception** (camera) decides *where* the robot should go.
-- **Navigation** (`Nav2` + LiDAR) decides *how* to get there safely.
+- **Navigation** (`Nav2` + Depth Camera) decides *how* to get there safely.
 - **Manipulation** (arm) executes *what* happens once the robot arrives.
 - Each subsystem is modular — detection, navigation, and arm control communicate only through well-defined topics/goals, not tight coupling.
 
@@ -128,7 +128,7 @@ The robot detects an object with its camera, autonomously navigates to it while 
 ## 🎯 Roadmap
 
 - [x] Robot model + simulation environment
-- [x] LiDAR-based SLAM mapping
+- [x] Depth Camera-based SLAM mapping
 - [x] Nav2 autonomous navigation to a manual goal
 - [ ] 📷 Camera-based object detection
 - [ ] 📍 Detection → navigation goal conversion
