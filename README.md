@@ -130,7 +130,7 @@ The robot detects an object with its camera, autonomously navigates to it while 
 - [x] Robot model + simulation environment
 - [x] Depth Camera-based SLAM mapping
 - [x] Nav2 autonomous navigation to a manual goal
-- [ ] 📷 Camera-based object detection
+- [x] 📷 Camera-based object detection
 - [ ] 📍 Detection → navigation goal conversion
 - [ ] 🤖 Auto-trigger pick-and-place on arrival
 - [ ] 🎨 Color/class-based sorting into multiple bins
