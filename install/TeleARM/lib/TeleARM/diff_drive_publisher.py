@@ -24,8 +24,8 @@ class DiffDrivePublisher(Node):
         self.timer = self.create_timer(0.05, self.publish_command)
         self.ticks = 0
         self.state = 'forward'
-        self.obstacle_threshold = 1.5   # meters
-        self.forward_speed = 0.1
+        self.obstacle_threshold = 2.0   # meters
+        self.forward_speed = 0.5
         self.reverse_speed = -0.2
         self.turn_speed = 0.5
         self.backup_ticks = 20          # ~1.0s at 0.05s timer

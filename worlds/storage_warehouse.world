@@ -92,26 +92,7 @@
       </link>
     </model>
 
-    <!-- A couple crates in the aisle -->
-    <model name="crate_a">
-      <static>true</static>
-      <pose>2.5 0 0.35 0 0 0</pose>
-      <link name="link">
-        <collision name="c"><geometry><box><size>0.8 0.6 0.7</size></box></geometry></collision>
-        <visual name="v"><geometry><box><size>0.8 0.6 0.7</size></box></geometry>
-          <material><ambient>0.7 0.45 0.2 1</ambient><diffuse>0.7 0.45 0.2 1</diffuse></material>
-        </visual>
-      </link>
-    </model>
-    <model name="crate_b">
-      <static>true</static>
-      <pose>-3 0 0.3 0 0 0.2</pose>
-      <link name="link">
-        <collision name="c"><geometry><box><size>0.7 0.7 0.6</size></box></geometry></collision>
-        <visual name="v"><geometry><box><size>0.7 0.7 0.6</size></box></geometry>
-          <material><ambient>0.7 0.45 0.2 1</ambient><diffuse>0.7 0.45 0.2 1</diffuse></material>
-        </visual>
-      </link>
-    </model>
+    
+  
   </world>
 </sdf>

@@ -167,7 +167,7 @@
     <hardware>
       <plugin>gazebo_ros2_control/GazeboSystem</plugin>
     </hardware>
-    <joint name="body_to_back_left_wheel"> 
+    <joint name="body_to_back_left_wheel">
       <command_interface name="velocity">
         <param name="min">-1</param>
         <param name="max">1</param>
