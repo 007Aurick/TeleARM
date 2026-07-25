@@ -24,26 +24,42 @@ class DiffDrivePublisher(Node):
         self.timer = self.create_timer(0.05, self.publish_command)
         self.ticks = 0
         self.state = 'forward'
-        self.obstacle_threshold = 2.0   # meters
+        self.obstacle_threshold = 2.0   # meters, front stopping distance
+        self.side_obstacle_threshold = 1.0   # meters, only react to genuinely close flank contact
         self.forward_speed = 0.5
         self.reverse_speed = -0.5
         self.turn_speed = 0.5
         self.backup_ticks = 20          # ~1.0s at 0.05s timer
-        self.turn_ticks = 63   
+        self.min_turn_ticks = 10        # ~0.5s minimum turn before re-checking sensors
+        self.max_turn_ticks = 400       # ~20s failsafe cap if it can never see clear
+        self.turn_direction = 0
 
         
 
     def scan_callback(self, msg):
         self.latest_scan = msg
 
+    def get_sides(self, ranges):
+        n = len(ranges)
+        half_width = n // 6  # +/- 60 degrees around each side center, meets the front cone with no gap
+        right_region = ranges[n//4-half_width:n//4+half_width]  # centered on -90 degrees: right
+        left_region = ranges[3*n//4-half_width:3*n//4+half_width]  # centered on +90 degrees: left
+        left_distance = [r for r in left_region if r > 0.0 and r != float('inf')]
+        right_distance = [r for r in right_region if r > 0.0 and r != float('inf')]
+
+        left_clear = min(left_distance) if left_distance else float('inf')
+        right_clear = min(right_distance) if right_distance else float('inf')
+
+        return left_clear, right_clear
+
     def get_front_distance(self):
         # No scan yet → treat as "unknown / far" (or blocked if you prefer)
         if self.latest_scan is None:
             return float('inf')
 
-        n = len(self.latest_scan.ranges)#360 lidar scans 1 per degree
+        n = len(self.latest_scan.ranges)
         center = n // 2# center index of the scan
-        window = 15# window of indices to consider around the center (15 degrees on each side)
+        window = n // 12# +/- 30 degrees around center, meets the side cones with no gap
         front_ranges = self.latest_scan.ranges[center - window:center + window]#takes a slice of the ranges array from center - window to center + window, which gives us a total of 30 values (15 on each side of the center)
         front_ranges = [
             r for r in front_ranges
@@ -55,13 +71,18 @@ class DiffDrivePublisher(Node):
     def publish_command(self):
         lin, ang = 0.0, 0.0
         front_distance = self.get_front_distance()
-
+        left_distance, right_distance = self.get_sides(self.latest_scan.ranges) if self.latest_scan else (float('inf'), float('inf'))
+        
         if self.state == 'forward':
-            if front_distance > self.obstacle_threshold:
+            if front_distance > self.obstacle_threshold and left_distance > self.side_obstacle_threshold and right_distance > self.side_obstacle_threshold:
                 lin,ang = self.forward_speed, 0.0
             else:
                 self.state = 'reverse'
                 self.ticks = 0
+                if left_distance > right_distance:
+                    self.turn_direction = 1  # turn left
+                else:
+                    self.turn_direction = -1  # turn right
         elif self.state == 'reverse':
             lin,ang = self.reverse_speed, 0.0
             self.ticks += 1#1 tick per 0.05s timer callback, so 20 ticks = 1 second of backing up
@@ -69,10 +90,15 @@ class DiffDrivePublisher(Node):
                 self.state = 'turn'#once we exceed the backup_ticks, we transition to the 'turn' state and reset the tick counter to 0
                 self.ticks = 0
         elif self.state == 'turn':
-            lin,ang = 0.0, self.turn_speed
-            self.ticks += 1 #63 ticks = 3.15 seconds of turning at 0.05s timer callback
-            if self.ticks >= self.turn_ticks:
-                self.state = 'forward'#once we exceed the turn_ticks, we transition back to the 'forward' state and reset the tick counter to 0
+            lin,ang = 0.0, self.turn_direction * self.turn_speed
+            self.ticks += 1
+            is_clear = (front_distance > self.obstacle_threshold
+                        and left_distance > self.side_obstacle_threshold
+                        and right_distance > self.side_obstacle_threshold)
+            # Turn until sensors actually agree it's clear, not for a fixed guessed angle.
+            # min_turn_ticks avoids a same-tick no-op turn; max_turn_ticks is a failsafe against endless spinning.
+            if self.ticks >= self.min_turn_ticks and (is_clear or self.ticks >= self.max_turn_ticks):
+                self.state = 'forward'
                 self.ticks = 0
            
 

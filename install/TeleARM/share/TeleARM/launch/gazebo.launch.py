@@ -29,18 +29,26 @@ def launch_setup(context, *args, **kwargs):
     urdf_xml = subprocess.check_output(['xacro', urdf_path], text=True)
     urdf_xml = re.sub(r'<!--.*?-->', '', urdf_xml, flags=re.DOTALL)
 
-    gazebo_launch = IncludeLaunchDescription(
+    gzserver_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([
                 FindPackageShare('gazebo_ros'),
                 'launch',
-                'gazebo.launch.py',
+                'gzserver.launch.py',
             ])
         ]),
         launch_arguments={
             'use_sim_time': 'true',
             'world': '/home/auric/ros2_ws/TeleARM/worlds/storage_warehouse.world'
         }.items(),
+    )
+
+    # Plain gzclient, bypassing gazebo_ros's gzclient.launch.py: it hardcodes
+    # --gui-client-plugin=libgazebo_ros_eol_gui.so, which segfaults on launch
+    # here (null gazebo::rendering::Camera pointer in that plugin).
+    gzclient_process = ExecuteProcess(
+        cmd=['gzclient'],
+        output='screen',
     )
 
     robot_state_publisher_node = Node(
@@ -116,7 +124,8 @@ def launch_setup(context, *args, **kwargs):
     )
 
     return [
-        gazebo_launch,
+        gzserver_launch,
+        gzclient_process,
         robot_state_publisher_node,
         robot_spawn_node,
         load_broadcaster_after_spawn,
