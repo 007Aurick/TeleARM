@@ -41,15 +41,15 @@ class DiffDrivePublisher(Node):
         if self.latest_scan is None:
             return float('inf')
 
-        n = len(self.latest_scan.ranges)
-        center = n // 2
-        window = 15
-        front_ranges = self.latest_scan.ranges[center - window:center + window]
+        n = len(self.latest_scan.ranges)#360 lidar scans 1 per degree
+        center = n // 2# center index of the scan
+        window = 15# window of indices to consider around the center (15 degrees on each side)
+        front_ranges = self.latest_scan.ranges[center - window:center + window]#takes a slice of the ranges array from center - window to center + window, which gives us a total of 30 values (15 on each side of the center)
         front_ranges = [
             r for r in front_ranges
-            if r > 0.0 and r != float('inf')
+            if r > 0.0 and r != float('inf')#only append the range values that are greater than 0.0 and not equal to infinity to the front_ranges list
         ]
-        return min(front_ranges) if front_ranges else float('inf')
+        return min(front_ranges) if front_ranges else float('inf')#only the minimum value of the front_ranges list is returned as it'll be closer to the object.
 
 
     def publish_command(self):
@@ -64,15 +64,15 @@ class DiffDrivePublisher(Node):
                 self.ticks = 0
         elif self.state == 'reverse':
             lin,ang = self.reverse_speed, 0.0
-            self.ticks += 1
+            self.ticks += 1#1 tick per 0.05s timer callback, so 20 ticks = 1 second of backing up
             if self.ticks >= self.backup_ticks:
-                self.state = 'turn'
+                self.state = 'turn'#once we exceed the backup_ticks, we transition to the 'turn' state and reset the tick counter to 0
                 self.ticks = 0
         elif self.state == 'turn':
             lin,ang = 0.0, self.turn_speed
-            self.ticks += 1
+            self.ticks += 1 #63 ticks = 3.15 seconds of turning at 0.05s timer callback
             if self.ticks >= self.turn_ticks:
-                self.state = 'forward'
+                self.state = 'forward'#once we exceed the turn_ticks, we transition back to the 'forward' state and reset the tick counter to 0
                 self.ticks = 0
            
 

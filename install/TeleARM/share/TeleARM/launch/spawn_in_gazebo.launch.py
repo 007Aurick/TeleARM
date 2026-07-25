@@ -1,47 +1,25 @@
+"""Spawn TeleARM into an ALREADY RUNNING Gazebo (e.g. AWS warehouse).
+
+Do NOT use gazebo.launch.py for this — that starts a second Gazebo.
+"""
 import os
 import re
 import subprocess
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import (
-    ExecuteProcess,
-    IncludeLaunchDescription,
-    OpaqueFunction,
-    RegisterEventHandler,
-)
+from launch.actions import ExecuteProcess, OpaqueFunction, RegisterEventHandler
 from launch.event_handlers import OnProcessExit
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
-from launch_ros.substitutions import FindPackageShare
 
 
 def launch_setup(context, *args, **kwargs):
     pkg_share = get_package_share_directory('TeleARM')
     urdf_path = os.path.join(pkg_share, 'urdf', 'telearm.urdf.xacro')
 
-    # Strip XML comments. gazebo_ros2_control on Humble crashes when
-    # robot_description has comments containing ": " (colons), so the
-    # controller_manager never starts and the robot never moves.
-    # Use regex (not sed) so we only remove comments, not whole URDF lines.
     urdf_xml = subprocess.check_output(['xacro', urdf_path], text=True)
     urdf_xml = re.sub(r'<!--.*?-->', '', urdf_xml, flags=re.DOTALL)
-
-    gazebo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            PathJoinSubstitution([
-                FindPackageShare('gazebo_ros'),
-                'launch',
-                'gazebo.launch.py',
-            ])
-        ]),
-        launch_arguments={
-            'use_sim_time': 'true',
-            'world': '/home/auric/ros2_ws/TeleARM/worlds/storage_warehouse.world'
-        }.items(),
-    )
 
     robot_state_publisher_node = Node(
         package='robot_state_publisher',
@@ -55,20 +33,21 @@ def launch_setup(context, *args, **kwargs):
         output='screen',
     )
 
+    # Spawn into the warehouse (open area near origin; tweak if you clip a shelf)
     robot_spawn_node = Node(
         package='gazebo_ros',
         executable='spawn_entity.py',
         arguments=[
             '-topic', 'robot_description',
-            '-entity', 'robot',
+            '-entity', 'telearm',
+            '-x', '0.0',
+            '-y', '0.0',
             '-z', '0.5',
             '-timeout', '180.0',
         ],
         output='screen',
     )
 
-    # IMPORTANT: use -s (sim time) — Gazebo/controller_manager run on /clock.
-    # Without -s, load_controller often fails immediately and the car never moves.
     load_joint_state_broadcaster = ExecuteProcess(
         cmd=[
             'bash', '-c',
@@ -94,34 +73,27 @@ def launch_setup(context, *args, **kwargs):
         output='screen',
     )
 
-    load_broadcaster_after_spawn = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=robot_spawn_node,
-            on_exit=[load_joint_state_broadcaster],
-        )
-    )
-
-    load_diff_drive_after_broadcaster = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=load_joint_state_broadcaster,
-            on_exit=[load_diff_drive_base_controller],
-        )
-    )
-
-    start_publisher_after_controller = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=load_diff_drive_base_controller,
-            on_exit=[diff_drive_publisher_node],
-        )
-    )
-
     return [
-        gazebo_launch,
         robot_state_publisher_node,
         robot_spawn_node,
-        load_broadcaster_after_spawn,
-        load_diff_drive_after_broadcaster,
-        start_publisher_after_controller,
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=robot_spawn_node,
+                on_exit=[load_joint_state_broadcaster],
+            )
+        ),
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=load_joint_state_broadcaster,
+                on_exit=[load_diff_drive_base_controller],
+            )
+        ),
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=load_diff_drive_base_controller,
+                on_exit=[diff_drive_publisher_node],
+            )
+        ),
     ]
 
 
