@@ -43,6 +43,8 @@ def launch_setup(context, *args, **kwargs):
         }.items(),
     )
 
+
+
     # Plain gzclient, bypassing gazebo_ros's gzclient.launch.py: it hardcodes
     # --gui-client-plugin=libgazebo_ros_eol_gui.so, which segfaults on launch
     # here (null gazebo::rendering::Camera pointer in that plugin).
@@ -95,6 +97,7 @@ def launch_setup(context, *args, **kwargs):
         output='screen',
     )
 
+
     diff_drive_publisher_node = Node(
         package='TeleARM',
         executable='diff_drive_publisher.py',
@@ -131,6 +134,8 @@ def launch_setup(context, *args, **kwargs):
         load_broadcaster_after_spawn,
         load_diff_drive_after_broadcaster,
         start_publisher_after_controller,
+        
+
     ]
 
 
