@@ -96,11 +96,25 @@ def launch_setup(context, *args, **kwargs):
         ],
         output='screen',
     )
+    load_gripper_controller = ExecuteProcess(
+        cmd=[
+            'bash', '-c',
+            'sleep 1 && ros2 control load_controller -s --spin-time 30 '
+            '--set-state active gripper_controller',
+        ],
+        output='screen',
+    )
 
 
     diff_drive_publisher_node = Node(
         package='TeleARM',
         executable='diff_drive_publisher.py',
+        parameters=[{'use_sim_time': True}],
+        output='screen',
+    )
+    gripper_publisher_node = Node(
+        package='TeleARM',
+        executable='gripper_publisher.py',
         parameters=[{'use_sim_time': True}],
         output='screen',
     )
@@ -116,6 +130,12 @@ def launch_setup(context, *args, **kwargs):
         event_handler=OnProcessExit(
             target_action=load_joint_state_broadcaster,
             on_exit=[load_diff_drive_base_controller],
+        )
+    )
+    start_gripper_publisher_after_controller = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=load_gripper_controller,
+            on_exit=[gripper_controller_node],
         )
     )
 
@@ -134,6 +154,8 @@ def launch_setup(context, *args, **kwargs):
         load_broadcaster_after_spawn,
         load_diff_drive_after_broadcaster,
         start_publisher_after_controller,
+        load_gripper_after_diff
+        start_gripper_publisher_after_gripper
         
 
     ]
