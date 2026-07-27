@@ -120,18 +120,51 @@
       </material>
     </visual>
   </link>
-  <link name="fork_lift_link">
+  <!-- Simple underbody gripper: base + 2 fingers -->
+  <link name="gripper_base">
     <inertial>
-      <mass value="0.5"/>
+      <mass value="0.3"/>
       <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <box size="1.25 1.50 0.08"/>
+        <box size="0.25 0.35 0.05"/>
       </geometry>
-      <material name="green">
-        <color rgba="0 1 0 1"/>
+      <material name="grey">
+        <color rgba="0.4 0.4 0.4 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <link name="left_finger">
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.15 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.30 0.04 0.08"/>
+      </geometry>
+      <material name="yellow">
+        <color rgba="1 0.85 0 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <link name="right_finger">
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.15 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.30 0.04 0.08"/>
+      </geometry>
+      <material name="yellow">
+        <color rgba="1 0.85 0 1"/>
       </material>
     </visual>
   </link>
@@ -170,12 +203,27 @@
     <axis xyz="0 0 -1"/>
   </joint>
 
-  <joint name="body_to_fork_lift_link" type="prismatic">
-    <origin xyz="2.6 0 0.10" rpy="0 0 0"/>
+  <!-- Gripper mounts under the front; slide fingers on Y to open/close -->
+  <joint name="body_to_gripper_base" type="fixed">
+    <origin xyz="2.4 0 0.15" rpy="0 0 0"/>
     <parent link="body"/>
-    <child link="fork_lift_link"/>
-    <axis xyz="0 0 1"/>
-    <limit effort="50" velocity="0.2" lower="-0.10" upper="0.419"/>
+    <child link="gripper_base"/>
+  </joint>
+
+  <joint name="gripper_left" type="prismatic">
+    <origin xyz="0 0.08 0" rpy="0 0 0"/>
+    <parent link="gripper_base"/>
+    <child link="left_finger"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="20" velocity="0.2" lower="0.0" upper="0.12"/>
+  </joint>
+
+  <joint name="gripper_right" type="prismatic">
+    <origin xyz="0 -0.08 0" rpy="0 0 0"/>
+    <parent link="gripper_base"/>
+    <child link="right_finger"/>
+    <axis xyz="0 -1 0"/>
+    <limit effort="20" velocity="0.2" lower="0.0" upper="0.12"/>
   </joint>
 
   
