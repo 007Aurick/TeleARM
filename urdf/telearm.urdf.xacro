@@ -120,11 +120,19 @@
       </material>
     </visual>
   </link>
-  <link name = "fork_lift_link" type = "prismatic">
+  <link name="fork_lift_link">
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
     <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <box size="0.4 0.15 0.05"/>
+        <box size="1.25 1.50 0.08"/>
       </geometry>
+      <material name="green">
+        <color rgba="0 1 0 1"/>
+      </material>
     </visual>
   </link>
 
@@ -162,12 +170,12 @@
     <axis xyz="0 0 -1"/>
   </joint>
 
-  <joint name = "body_to_fork_lift_link" type = "prismatic">
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+  <joint name="body_to_fork_lift_link" type="prismatic">
+    <origin xyz="2.6 0 0.10" rpy="0 0 0"/>
     <parent link="body"/>
     <child link="fork_lift_link"/>
     <axis xyz="0 0 1"/>
-    <limit effort="50" velocity="0.2" lower="0" upper="0.5"/>
+    <limit effort="50" velocity="0.2" lower="-0.10" upper="0.419"/>
   </joint>
 
   
