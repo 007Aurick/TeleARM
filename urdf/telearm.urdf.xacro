@@ -129,10 +129,10 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <box size="0.25 0.35 0.05"/>
+        <box size="0.5 1.0 0.05"/>
       </geometry>
-      <material name="grey">
-        <color rgba="0.4 0.4 0.4 1"/>
+      <material name="green">
+        <color rgba="0 1 0 1"/>
       </material>
     </visual>
   </link>
@@ -145,7 +145,7 @@
     <visual>
       <origin xyz="0.15 0 0" rpy="0 0 0"/>
       <geometry>
-        <box size="0.30 0.04 0.08"/>
+        <box size="1.2 0.04 0.08"/>
       </geometry>
       <material name="yellow">
         <color rgba="1 0.85 0 1"/>
@@ -161,7 +161,7 @@
     <visual>
       <origin xyz="0.15 0 0" rpy="0 0 0"/>
       <geometry>
-        <box size="0.30 0.04 0.08"/>
+        <box size="1.2 0.04 0.08"/>
       </geometry>
       <material name="yellow">
         <color rgba="1 0.85 0 1"/>
@@ -215,7 +215,7 @@
     <parent link="gripper_base"/>
     <child link="left_finger"/>
     <axis xyz="0 1 0"/>
-    <limit effort="20" velocity="0.2" lower="0.0" upper="0.12"/>
+    <limit effort="20" velocity="0.2" lower="0.0" upper="0.4"/>
   </joint>
 
   <joint name="gripper_right" type="prismatic">
@@ -223,7 +223,7 @@
     <parent link="gripper_base"/>
     <child link="right_finger"/>
     <axis xyz="0 -1 0"/>
-    <limit effort="20" velocity="0.2" lower="0.0" upper="0.12"/>
+    <limit effort="20" velocity="0.2" lower="0.0" upper="0.4"/>
   </joint>
 
   
