@@ -1,4 +1,5 @@
 /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/launch/online_async_launch.py
+/home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/launch/display.launch.py
 /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/launch/gazebo.launch.py
 /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/launch/mapper_params_online_async.yaml
 /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/launch/navigation.launch.py
@@ -13,6 +14,7 @@
 /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/meshes/.gitkeep
 /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/meshes/wheel.STL
 /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/worlds/storage_warehouse.world
+/home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/rviz/telearm.rviz
 /home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/diff_drive_publisher.py
 /home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/cleanup_controller.py
 /home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/cmd_vel_relay.py

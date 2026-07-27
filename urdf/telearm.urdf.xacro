@@ -120,6 +120,13 @@
       </material>
     </visual>
   </link>
+  <link name = "fork_lift_link" type = "prismatic">
+    <visual>
+      <geometry>
+        <box size="0.4 0.15 0.05"/>
+      </geometry>
+    </visual>
+  </link>
 
   <joint name="body_to_window" type="fixed">
     <origin xyz="0 0 0"/>
@@ -155,6 +162,16 @@
     <axis xyz="0 0 -1"/>
   </joint>
 
+  <joint name = "body_to_fork_lift_link" type = "prismatic">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="body"/>
+    <child link="fork_lift_link"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="50" velocity="0.2" lower="0" upper="0.5"/>
+  </joint>
+
+  
+
   <link name="lidar_link"/>
   <joint name="body_to_lidar_link" type="fixed">
     <!-- Front license-plate area (body mesh: x front~2.19, z roof~1.18, z bottom~0) -->
@@ -162,6 +179,10 @@
     <parent link="body"/>
     <child link="lidar_link"/>
   </joint>
+
+
+
+  
 
   <ros2_control name="GazeboSystem" type="system">
     <hardware>

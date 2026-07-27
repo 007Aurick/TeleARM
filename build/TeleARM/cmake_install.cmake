@@ -49,6 +49,7 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
     "/home/auric/ros2_ws/TeleARM/config"
     "/home/auric/ros2_ws/TeleARM/meshes"
     "/home/auric/ros2_ws/TeleARM/worlds"
+    "/home/auric/ros2_ws/TeleARM/rviz"
     )
 endif()
 

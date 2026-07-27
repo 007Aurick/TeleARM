@@ -13,6 +13,7 @@ install(DIRECTORY
   config
   meshes
   worlds
+  rviz
   DESTINATION share/${PROJECT_NAME}
 )
 

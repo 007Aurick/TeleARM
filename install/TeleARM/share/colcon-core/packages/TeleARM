@@ -1,1 +1,1 @@
-geometry_msgs:nav2_bringup:rclpy:slam_toolbox
+geometry_msgs:joint_state_publisher_gui:nav2_bringup:rclpy:robot_state_publisher:rviz2:slam_toolbox:xacro
