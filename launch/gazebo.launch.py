@@ -25,7 +25,6 @@ def launch_setup(context, *args, **kwargs):
     # Strip XML comments. gazebo_ros2_control on Humble crashes when
     # robot_description has comments containing ": " (colons), so the
     # controller_manager never starts and the robot never moves.
-    # Use regex (not sed) so we only remove comments, not whole URDF lines.
     urdf_xml = subprocess.check_output(['xacro', urdf_path], text=True)
     urdf_xml = re.sub(r'<!--.*?-->', '', urdf_xml, flags=re.DOTALL)
 
@@ -39,15 +38,12 @@ def launch_setup(context, *args, **kwargs):
         ]),
         launch_arguments={
             'use_sim_time': 'true',
-            'world': '/home/auric/ros2_ws/TeleARM/worlds/storage_warehouse.world'
+            'world': '/home/auric/ros2_ws/TeleARM/worlds/storage_warehouse.world',
         }.items(),
     )
 
-
-
-    # Plain gzclient, bypassing gazebo_ros's gzclient.launch.py: it hardcodes
-    # --gui-client-plugin=libgazebo_ros_eol_gui.so, which segfaults on launch
-    # here (null gazebo::rendering::Camera pointer in that plugin).
+    # Plain gzclient: gazebo_ros's gzclient.launch.py hardcodes
+    # libgazebo_ros_eol_gui.so, which segfaults on this WSL setup.
     gzclient_process = ExecuteProcess(
         cmd=['gzclient'],
         output='screen',
@@ -78,7 +74,6 @@ def launch_setup(context, *args, **kwargs):
     )
 
     # IMPORTANT: use -s (sim time) — Gazebo/controller_manager run on /clock.
-    # Without -s, load_controller often fails immediately and the car never moves.
     load_joint_state_broadcaster = ExecuteProcess(
         cmd=[
             'bash', '-c',
@@ -96,6 +91,7 @@ def launch_setup(context, *args, **kwargs):
         ],
         output='screen',
     )
+
     load_gripper_controller = ExecuteProcess(
         cmd=[
             'bash', '-c',
@@ -105,13 +101,13 @@ def launch_setup(context, *args, **kwargs):
         output='screen',
     )
 
-
     diff_drive_publisher_node = Node(
         package='TeleARM',
         executable='diff_drive_publisher.py',
         parameters=[{'use_sim_time': True}],
         output='screen',
     )
+
     gripper_publisher_node = Node(
         package='TeleARM',
         executable='gripper_publisher.py',
@@ -119,6 +115,7 @@ def launch_setup(context, *args, **kwargs):
         output='screen',
     )
 
+    # spawn → broadcaster → diff_drive → gripper → both publishers
     load_broadcaster_after_spawn = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=robot_spawn_node,
@@ -132,17 +129,18 @@ def launch_setup(context, *args, **kwargs):
             on_exit=[load_diff_drive_base_controller],
         )
     )
-    start_gripper_publisher_after_controller = RegisterEventHandler(
+
+    load_gripper_after_diff = RegisterEventHandler(
         event_handler=OnProcessExit(
-            target_action=load_gripper_controller,
-            on_exit=[gripper_controller_node],
+            target_action=load_diff_drive_base_controller,
+            on_exit=[load_gripper_controller],
         )
     )
 
-    start_publisher_after_controller = RegisterEventHandler(
+    start_publishers_after_gripper = RegisterEventHandler(
         event_handler=OnProcessExit(
-            target_action=load_diff_drive_base_controller,
-            on_exit=[diff_drive_publisher_node],
+            target_action=load_gripper_controller,
+            on_exit=[diff_drive_publisher_node, gripper_publisher_node],
         )
     )
 
@@ -153,11 +151,8 @@ def launch_setup(context, *args, **kwargs):
         robot_spawn_node,
         load_broadcaster_after_spawn,
         load_diff_drive_after_broadcaster,
-        start_publisher_after_controller,
-        load_gripper_after_diff
-        start_gripper_publisher_after_gripper
-        
-
+        load_gripper_after_diff,
+        start_publishers_after_gripper,
     ]
 
 

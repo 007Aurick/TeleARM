@@ -9,6 +9,9 @@ controller_manager:
     diff_drive_base_controller:
       type: diff_drive_controller/DiffDriveController
 
+    gripper_controller:
+      type: position_controllers/JointGroupPositionController
+
 diff_drive_base_controller:
   ros__parameters:
     left_wheel_names: ["body_to_back_left_wheel"]
@@ -56,3 +59,9 @@ diff_drive_base_controller:
     angular.z.min_acceleration: -1.0
     angular.z.max_jerk: 0.0
     angular.z.min_jerk: 0.0
+
+gripper_controller:
+  ros__parameters:
+    joints:
+      - gripper_left
+      - gripper_right
