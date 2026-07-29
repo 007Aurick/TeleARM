@@ -36,9 +36,9 @@ class GripperPublisher(Node):
     def publish_command(self):
         front_distance = self.get_front_distance()
         if front_distance < self.wall_threshold:
-            pos = self.open_pos
-        else:
             pos = self.close_pos
+        else:
+            pos = self.open_pos
             
         msg = Float64MultiArray()
         msg.data = [pos, pos]
