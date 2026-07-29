@@ -72,6 +72,13 @@ def launch_setup(context, *args, **kwargs):
         ],
         output='screen',
     )
+    foxglove_bridge_node = Node(
+        package = 'foxglove_bridge',
+        executable = 'foxglove_bridge',
+        name = 'foxglove_bridge',
+        output = 'screen',
+        parameters = [{'port': 8765}]
+    )
 
     # IMPORTANT: use -s (sim time) — Gazebo/controller_manager run on /clock.
     load_joint_state_broadcaster = ExecuteProcess(
@@ -149,6 +156,7 @@ def launch_setup(context, *args, **kwargs):
         gzclient_process,
         robot_state_publisher_node,
         robot_spawn_node,
+        foxglove_bridge_node,
         load_broadcaster_after_spawn,
         load_diff_drive_after_broadcaster,
         load_gripper_after_diff,
