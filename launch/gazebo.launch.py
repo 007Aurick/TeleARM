@@ -73,11 +73,15 @@ def launch_setup(context, *args, **kwargs):
         output='screen',
     )
     foxglove_bridge_node = Node(
-        package = 'foxglove_bridge',
-        executable = 'foxglove_bridge',
-        name = 'foxglove_bridge',
-        output = 'screen',
-        parameters = [{'port': 8765}]
+        package='foxglove_bridge',
+        executable='foxglove_bridge',
+        name='foxglove_bridge',
+        output='screen',
+        parameters=[{
+            'port': 8765,
+            'address': '0.0.0.0',  # needed so Windows Foxglove can reach WSL
+            'use_sim_time': True,
+        }],
     )
 
     # IMPORTANT: use -s (sim time) — Gazebo/controller_manager run on /clock.
