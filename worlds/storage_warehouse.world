@@ -238,12 +238,11 @@
       </link>
     </model>
 
-    <!-- Corner drop pads (match box colors 1:1) -->
+    <!-- Corner drop pads (visual only — no collision so avoidance won't bounce on them) -->
     <model name="drop_orange">
       <static>true</static>
       <pose>-14 9 0.03 0 0 0</pose>
       <link name="link">
-        <collision name="c"><geometry><box><size>1.5 1.5 0.06</size></box></geometry></collision>
         <visual name="v"><geometry><box><size>1.5 1.5 0.06</size></box></geometry>
           <material><ambient>0.95 0.45 0.05 1</ambient><diffuse>1.0 0.5 0.05 1</diffuse></material>
         </visual>
@@ -253,7 +252,6 @@
       <static>true</static>
       <pose>14 9 0.03 0 0 0</pose>
       <link name="link">
-        <collision name="c"><geometry><box><size>1.5 1.5 0.06</size></box></geometry></collision>
         <visual name="v"><geometry><box><size>1.5 1.5 0.06</size></box></geometry>
           <material><ambient>0.05 0.35 0.95 1</ambient><diffuse>0.1 0.4 1.0 1</diffuse></material>
         </visual>
@@ -263,7 +261,6 @@
       <static>true</static>
       <pose>-14 -9 0.03 0 0 0</pose>
       <link name="link">
-        <collision name="c"><geometry><box><size>1.5 1.5 0.06</size></box></geometry></collision>
         <visual name="v"><geometry><box><size>1.5 1.5 0.06</size></box></geometry>
           <material><ambient>0.1 0.75 0.2 1</ambient><diffuse>0.15 0.85 0.25 1</diffuse></material>
         </visual>
@@ -273,7 +270,6 @@
       <static>true</static>
       <pose>14 -9 0.03 0 0 0</pose>
       <link name="link">
-        <collision name="c"><geometry><box><size>1.5 1.5 0.06</size></box></geometry></collision>
         <visual name="v"><geometry><box><size>1.5 1.5 0.06</size></box></geometry>
           <material><ambient>0.9 0.1 0.1 1</ambient><diffuse>1.0 0.15 0.15 1</diffuse></material>
         </visual>
