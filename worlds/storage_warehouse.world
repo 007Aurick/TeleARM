@@ -103,7 +103,7 @@
 
     <!-- Bigger colored boxes (~0.55 m). Clear of spawn (origin). -->
     <model name="box_orange_1">
-      <pose>-3 0 0.28 0 0 0.2</pose>
+      <pose>-3 4.5 0.28 0 0 0.2</pose>
       <link name="link">
         <collision name="c"><geometry><box><size>0.55 0.55 0.55</size></box></geometry></collision>
         <visual name="v"><geometry><box><size>0.55 0.55 0.55</size></box></geometry>
@@ -225,7 +225,7 @@
       </link>
     </model>
     <model name="box_green_3">
-      <pose>4 0 0.28 0 0 -0.4</pose>
+      <pose>4 5.5 0.28 0 0 -0.4</pose>
       <link name="link">
         <collision name="c"><geometry><box><size>0.55 0.55 0.55</size></box></geometry></collision>
         <visual name="v"><geometry><box><size>0.55 0.55 0.55</size></box></geometry>
