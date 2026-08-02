@@ -8,28 +8,31 @@
   wall ahead = both blocked
 """
 
-import math
+
 
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
-from std_msgs.msg import Bool, Float32, String
+from std_msgs.msg import String
 
 
 class BoxDetector(Node):
     def __init__(self):
         super().__init__('box_detector')
         self.subscriber =  self.create_subscription(Image, '/camera/image_raw', self.image_callback, 10)
-        self.low = None
-        self.high = None
-        self.window = 20
-        self.block_threshold = 2.5  # meters
+        self.color = self.create_publisher(String, '/detected_box_color', 10)
+        self.latest_image = None
+        self.timer = self.create_timer(0.1, self.publish_command)
+        
+    
         
 
     def image_callback(self, msg):
         self.latest_image = msg
             
     def detect_color(self):
+        if self.latest_image is None:
+            return None
         orange_color = (255,123,13)
         blue_color = (26,102,255)
         green_color = (38,217,64)
@@ -37,6 +40,13 @@ class BoxDetector(Node):
 
 
     def publish_command(self):
+    
+
+
+
+    msg = String()
+    msg.data = self.detect_color()
+    self.color.publish(msg)
 
 
 
