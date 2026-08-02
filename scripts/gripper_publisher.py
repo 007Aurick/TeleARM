@@ -4,24 +4,21 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float64MultiArray, String
 
-
-
 class GripperPublisher(Node):
     def __init__(self):
         super().__init__('gripper_publisher')
         self.publisher = self.create_publisher(Float64MultiArray, '/gripper_controller/commands', 10)
-        self.subscriber = self.create_subscription(Image, '/camera/image_raw', self.image_callback, 10)
-        self.color_subscriber = self.create_subscription(String, '/detected_box_color', self.color_callback, 10)
-        self.latest_color = None
+        self.subscriber = self.create_subscription(String, '/gripper_command', self.command_callback, 10)
+        self.command = None
         self.timer = self.create_timer(0.05, self.publish_command)
         self.close_pos = 0.0
         self.open_pos = 0.35
     
-    def color_callback(self, msg):
-        self.latest_color = msg.data
+    def command_callback(self, msg):
+        self.command = msg.data
     
     def publish_command(self):
-        if self.latest_color != 'none' and self.latest_color is not None:
+        if self.command == 'close':
             pos = self.close_pos
         else:
             pos = self.open_pos

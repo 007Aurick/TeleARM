@@ -9,7 +9,7 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    wheeled_robot_dir = get_package_share_directory('wheeled_robot')
+    telearm_dir = get_package_share_directory('TeleARM')
     nav2_bringup_dir = get_package_share_directory('nav2_bringup')
 
     use_sim_time = LaunchConfiguration('use_sim_time')
@@ -23,8 +23,8 @@ def generate_launch_description():
 
     declare_params_file = DeclareLaunchArgument(
         'params_file',
-        default_value=os.path.join(wheeled_robot_dir, 'config', 'nav2_params.yaml'),
-        description='Nav2 parameters file',
+        default_value=os.path.join(telearm_dir, 'config', 'nav2_params.yaml'),
+        description='TeleARM Nav2 parameters file',
     )
 
     navigation_launch = IncludeLaunchDescription(
@@ -39,7 +39,7 @@ def generate_launch_description():
     )
 
     cmd_vel_relay_node = Node(
-        package='wheeled_robot',
+        package='TeleARM',
         executable='cmd_vel_relay.py',
         name='cmd_vel_relay',
         output='screen',
