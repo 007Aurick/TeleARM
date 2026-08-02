@@ -19,19 +19,24 @@ from std_msgs.msg import Bool, Float32, String
 class BoxDetector(Node):
     def __init__(self):
         super().__init__('box_detector')
+        self.subscriber =  self.create_subscription(Image, '/camera/image_raw', self.image_callback, 10)
         self.low = None
         self.high = None
         self.window = 20
         self.block_threshold = 2.5  # meters
-        self.subscriber =  self.create_subscription(Image, '/camera/image_raw', self.image_callback, 10)
+        
 
-        def image_callback(self, msg):
-            self.latest_image = msg
+    def image_callback(self, msg):
+        self.latest_image = msg
             
-        def detect_color(self):
+    def detect_color(self):
+        orange_color = (255,123,13)
+        blue_color = (26,102,255)
+        green_color = (38,217,64)
+        red_color = (255,38,38)
 
 
-        def publish_command(self):
+    def publish_command(self):
 
 
 
