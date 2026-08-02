@@ -12,7 +12,7 @@ import math
 
 import rclpy
 from rclpy.node import Node
-from sensor_msgs.msg import LaserScan
+from sensor_msgs.msg import Image
 from std_msgs.msg import Bool, Float32, String
 
 
@@ -23,6 +23,16 @@ class BoxDetector(Node):
         self.high = None
         self.window = 20
         self.block_threshold = 2.5  # meters
+        self.subscriber =  self.create_subscription(Image, '/camera/image_raw', self.image_callback, 10)
+
+        def image_callback(self, msg):
+            self.latest_image = msg
+            
+        def detect_color(self):
+
+
+        def publish_command(self):
+
 
 
 def main(args=None):
