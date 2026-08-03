@@ -5,14 +5,16 @@ import subprocess
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import (
+    DeclareLaunchArgument,
     ExecuteProcess,
     IncludeLaunchDescription,
     OpaqueFunction,
     RegisterEventHandler,
 )
+from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
@@ -21,6 +23,7 @@ from launch_ros.substitutions import FindPackageShare
 def launch_setup(context, *args, **kwargs):
     pkg_share = get_package_share_directory('TeleARM')
     urdf_path = os.path.join(pkg_share, 'urdf', 'telearm.urdf.xacro')
+    world_path = os.path.join(pkg_share, 'worlds', 'storage_warehouse.world')
 
     # Strip XML comments. gazebo_ros2_control on Humble crashes when
     # robot_description has comments containing ": " (colons), so the
@@ -38,7 +41,7 @@ def launch_setup(context, *args, **kwargs):
         ]),
         launch_arguments={
             'use_sim_time': 'true',
-            'world': '/home/auric/ros2_ws/TeleARM/worlds/storage_warehouse.world',
+            'world': world_path,
         }.items(),
     )
 
@@ -47,6 +50,7 @@ def launch_setup(context, *args, **kwargs):
     gzclient_process = ExecuteProcess(
         cmd=['gzclient'],
         output='screen',
+        condition=IfCondition(LaunchConfiguration('gui')),
     )
 
     robot_state_publisher_node = Node(
@@ -72,6 +76,7 @@ def launch_setup(context, *args, **kwargs):
         ],
         output='screen',
     )
+
     foxglove_bridge_node = Node(
         package='foxglove_bridge',
         executable='foxglove_bridge',
@@ -79,7 +84,7 @@ def launch_setup(context, *args, **kwargs):
         output='screen',
         parameters=[{
             'port': 8765,
-            'address': '0.0.0.0',  # needed so Windows Foxglove can reach WSL
+            'address': '0.0.0.0',
             'use_sim_time': True,
         }],
     )
@@ -126,7 +131,6 @@ def launch_setup(context, *args, **kwargs):
         output='screen',
     )
 
-    # spawn → broadcaster → diff_drive → gripper → both publishers
     load_broadcaster_after_spawn = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=robot_spawn_node,
@@ -170,5 +174,10 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
     return LaunchDescription([
+        DeclareLaunchArgument(
+            'gui',
+            default_value='true',
+            description='Start Gazebo client GUI (gzclient)',
+        ),
         OpaqueFunction(function=launch_setup),
     ])

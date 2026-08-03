@@ -1,0 +1,190 @@
+[0.000000] (-) TimerEvent: {}
+[0.005162] (TeleARM) JobQueued: {'identifier': 'TeleARM', 'dependencies': OrderedDict()}
+[0.006010] (TeleARM) JobStarted: {'identifier': 'TeleARM'}
+[0.090435] (-) TimerEvent: {}
+[0.202483] (-) TimerEvent: {}
+[0.222799] (TeleARM) JobProgress: {'identifier': 'TeleARM', 'progress': 'cmake'}
+[0.237824] (TeleARM) JobProgress: {'identifier': 'TeleARM', 'progress': 'build'}
+[0.248631] (TeleARM) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/auric/ros2_ws/TeleARM/build/TeleARM', '--', '-j16', '-l16'], 'cwd': '/home/auric/ros2_ws/TeleARM/build/TeleARM', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'auric'), ('GIT_ASKPASS', '/home/auric/.cursor-server/bin/31e8d61c448c7472e371505838a0fe34083dad50/extensions/git/dist/askpass.sh'), ('SHLVL', '1'), ('LIBGL_ALWAYS_SOFTWARE', '1'), ('LD_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('MOTD_SHOWN', 'update-motd'), ('HOME', '/home/auric'), ('TERM_PROGRAM_VERSION', '3.13.25'), ('VSCODE_IPC_HOOK_CLI', '/run/user/1000/vscode-ipc-275e843d-a001-4e2f-a08a-5b87735c3d51.sock'), ('ROS_PYTHON_VERSION', '3'), ('VSCODE_GIT_ASKPASS_MAIN', '/home/auric/.cursor-server/bin/31e8d61c448c7472e371505838a0fe34083dad50/extensions/git/dist/askpass-main.js'), ('VSCODE_GIT_ASKPASS_NODE', '/home/auric/.cursor-server/bin/31e8d61c448c7472e371505838a0fe34083dad50/node'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('WSL_DISTRO_NAME', 'Ubuntu-22.04'), ('WAYLAND_DISPLAY', 'wayland-0'), ('ROS_DISTRO', 'humble'), ('OVSX_REGISTRY_URL', 'https://open-vsx.org'), ('LOGNAME', 'auric'), ('NAME', 'Aurick'), ('WSL_INTEROP', '/run/WSL/557_interop'), ('PULSE_SERVER', 'unix:/mnt/wslg/PulseServer'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('TERM', 'xterm-256color'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/home/auric/.cursor-server/bin/31e8d61c448c7472e371505838a0fe34083dad50/bin/remote-cli:/usr/lib/ccache:/home/auric/ardupilot/Tools/autotest:/opt/gcc-arm-none-eabi-10-2020-q4-major/bin:/home/auric/.local/bin:/opt/ros/humble/bin:/home/auric/.cursor-server/bin/31e8d61c448c7472e371505838a0fe34083dad50/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/MATLAB/R2025a/bin:/mnt/c/Program Files/nodejs/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/MATLAB/MATLAB Runtime/R2024a/runtime/win64:/mnt/c/Program Files/cursor/resources/app/bin:/mnt/c/Program Files (x86)/Windows Kits/8.1/Windows Performance Toolkit/:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/Program Files (x86)/MAVProxy:/mnt/c/Program Files/Microsoft VS Code/bin:/mnt/c/Users/auric/AppData/Local/Programs/cursor/resources/app/codeBin:/mnt/c/Users/auric/AppData/Local/Programs/Python/Launcher/:/mnt/c/Users/auric/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/auric/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/auric/AppData/Local/Programs/cursor/resources/app/bin:/mnt/c/Users/auric/AppData/Roaming/npm:/mnt/c/Users/auric/AppData/Local/Programs/Ollama:/mnt/c/Users/auric/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1.2-full_build/bin:/mnt/c/Users/auric/AppData/Local/Microsoft/WinGet/Packages/Ngrok.Ngrok_Microsoft.Winget.Source_8wekyb3d8bbwe:/snap/bin:/home/auric/.local/bin:/home/auric/.local/bin'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('LANG', 'en_US.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('VSCODE_GIT_IPC_HANDLE', '/run/user/1000/vscode-git-aaf44574ca.sock'), ('TERM_PROGRAM', 'vscode'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('SHELL', '/bin/bash'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('VSCODE_GIT_IPC_AUTH_TOKEN', '65d2981e2b8368fc54d89495489194b8075d16b05ea7fe19787b1e52afa02975'), ('VSCODE_GIT_ASKPASS_EXTRA_ARGS', ''), ('PWD', '/home/auric/ros2_ws/TeleARM/build/TeleARM'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('WSL2_GUI_APPS_ENABLED', '1'), ('HOSTTYPE', 'x86_64'), ('WSLENV', ''), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[0.307286] (-) TimerEvent: {}
+[0.436954] (-) TimerEvent: {}
+[0.540557] (-) TimerEvent: {}
+[0.643329] (-) TimerEvent: {}
+[0.745859] (-) TimerEvent: {}
+[0.848483] (-) TimerEvent: {}
+[0.950481] (-) TimerEvent: {}
+[1.052896] (-) TimerEvent: {}
+[1.154714] (-) TimerEvent: {}
+[1.259415] (-) TimerEvent: {}
+[1.364042] (TeleARM) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[1.366292] (-) TimerEvent: {}
+[1.468429] (-) TimerEvent: {}
+[1.573310] (-) TimerEvent: {}
+[1.676270] (-) TimerEvent: {}
+[1.780388] (-) TimerEvent: {}
+[1.884417] (-) TimerEvent: {}
+[1.988500] (-) TimerEvent: {}
+[2.092289] (-) TimerEvent: {}
+[2.196582] (-) TimerEvent: {}
+[2.300950] (-) TimerEvent: {}
+[2.404711] (-) TimerEvent: {}
+[2.508034] (-) TimerEvent: {}
+[2.611907] (-) TimerEvent: {}
+[2.715691] (-) TimerEvent: {}
+[2.818980] (-) TimerEvent: {}
+[2.924266] (-) TimerEvent: {}
+[3.029303] (-) TimerEvent: {}
+[3.092805] (TeleARM) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.12.15 (/opt/ros/humble/share/ament_lint_auto/cmake)\n'}
+[3.131705] (-) TimerEvent: {}
+[3.237862] (-) TimerEvent: {}
+[3.340609] (-) TimerEvent: {}
+[3.447795] (-) TimerEvent: {}
+[3.550309] (-) TimerEvent: {}
+[3.621275] (TeleARM) StderrLine: {'line': b'WARNING: Package name "TeleARM" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.\n'}
+[3.651397] (-) TimerEvent: {}
+[3.753734] (-) TimerEvent: {}
+[3.857813] (-) TimerEvent: {}
+[3.964633] (-) TimerEvent: {}
+[4.067062] (-) TimerEvent: {}
+[4.173732] (-) TimerEvent: {}
+[4.279055] (-) TimerEvent: {}
+[4.388614] (-) TimerEvent: {}
+[4.500303] (-) TimerEvent: {}
+[4.612202] (-) TimerEvent: {}
+[4.724510] (-) TimerEvent: {}
+[4.826641] (-) TimerEvent: {}
+[4.928520] (-) TimerEvent: {}
+[5.031830] (-) TimerEvent: {}
+[5.143618] (-) TimerEvent: {}
+[5.248195] (-) TimerEvent: {}
+[5.351243] (-) TimerEvent: {}
+[5.455410] (-) TimerEvent: {}
+[5.560559] (-) TimerEvent: {}
+[5.665702] (-) TimerEvent: {}
+[5.774395] (-) TimerEvent: {}
+[5.879961] (-) TimerEvent: {}
+[5.982200] (-) TimerEvent: {}
+[6.087419] (-) TimerEvent: {}
+[6.195066] (-) TimerEvent: {}
+[6.297743] (-) TimerEvent: {}
+[6.400700] (-) TimerEvent: {}
+[6.507894] (-) TimerEvent: {}
+[6.614810] (-) TimerEvent: {}
+[6.625087] (TeleARM) StdoutLine: {'line': b"-- Added test 'cppcheck' to perform static code analysis on C / C++ code\n"}
+[6.627159] (TeleARM) StdoutLine: {'line': b'-- Configured cppcheck include dirs: \n'}
+[6.627981] (TeleARM) StdoutLine: {'line': b'-- Configured cppcheck exclude dirs and/or files: \n'}
+[6.715907] (-) TimerEvent: {}
+[6.822879] (-) TimerEvent: {}
+[6.875908] (TeleARM) StdoutLine: {'line': b"-- Added test 'flake8' to check Python code syntax and style conventions\n"}
+[6.924589] (-) TimerEvent: {}
+[7.031815] (-) TimerEvent: {}
+[7.144169] (-) TimerEvent: {}
+[7.256472] (-) TimerEvent: {}
+[7.368962] (-) TimerEvent: {}
+[7.473351] (TeleARM) StdoutLine: {'line': b"-- Added test 'lint_cmake' to check CMake code style\n"}
+[7.475151] (-) TimerEvent: {}
+[7.587106] (-) TimerEvent: {}
+[7.692629] (-) TimerEvent: {}
+[7.797193] (-) TimerEvent: {}
+[7.904011] (-) TimerEvent: {}
+[8.010621] (-) TimerEvent: {}
+[8.016253] (TeleARM) StdoutLine: {'line': b"-- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257\n"}
+[8.114792] (-) TimerEvent: {}
+[8.220224] (-) TimerEvent: {}
+[8.328092] (-) TimerEvent: {}
+[8.433097] (-) TimerEvent: {}
+[8.540718] (-) TimerEvent: {}
+[8.647742] (-) TimerEvent: {}
+[8.754214] (-) TimerEvent: {}
+[8.861542] (-) TimerEvent: {}
+[8.968251] (-) TimerEvent: {}
+[9.074293] (-) TimerEvent: {}
+[9.178062] (-) TimerEvent: {}
+[9.291013] (-) TimerEvent: {}
+[9.398491] (-) TimerEvent: {}
+[9.510789] (-) TimerEvent: {}
+[9.623873] (-) TimerEvent: {}
+[9.730905] (-) TimerEvent: {}
+[9.838022] (-) TimerEvent: {}
+[9.945697] (-) TimerEvent: {}
+[10.056469] (-) TimerEvent: {}
+[10.159154] (-) TimerEvent: {}
+[10.263095] (-) TimerEvent: {}
+[10.324121] (TeleARM) StdoutLine: {'line': b"-- Added test 'uncrustify' to check C / C++ code style\n"}
+[10.327163] (TeleARM) StdoutLine: {'line': b'-- Configured uncrustify additional arguments: \n'}
+[10.368092] (-) TimerEvent: {}
+[10.480833] (-) TimerEvent: {}
+[10.593864] (-) TimerEvent: {}
+[10.673127] (TeleARM) StdoutLine: {'line': b"-- Added test 'xmllint' to check XML markup files\n"}
+[10.695008] (-) TimerEvent: {}
+[10.707060] (TeleARM) StdoutLine: {'line': b'-- Configuring done\n'}
+[10.800689] (-) TimerEvent: {}
+[10.818247] (TeleARM) StdoutLine: {'line': b'-- Generating done\n'}
+[10.888182] (TeleARM) StdoutLine: {'line': b'-- Build files have been written to: /home/auric/ros2_ws/TeleARM/build/TeleARM\n'}
+[10.902545] (-) TimerEvent: {}
+[11.008052] (-) TimerEvent: {}
+[11.111566] (-) TimerEvent: {}
+[11.289356] (-) TimerEvent: {}
+[11.396703] (-) TimerEvent: {}
+[11.489717] (TeleARM) CommandEnded: {'returncode': 0}
+[11.498145] (-) TimerEvent: {}
+[11.513147] (TeleARM) JobProgress: {'identifier': 'TeleARM', 'progress': 'install'}
+[11.599910] (-) TimerEvent: {}
+[11.718597] (TeleARM) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/auric/ros2_ws/TeleARM/build/TeleARM'], 'cwd': '/home/auric/ros2_ws/TeleARM/build/TeleARM', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'auric'), ('GIT_ASKPASS', '/home/auric/.cursor-server/bin/31e8d61c448c7472e371505838a0fe34083dad50/extensions/git/dist/askpass.sh'), ('SHLVL', '1'), ('LIBGL_ALWAYS_SOFTWARE', '1'), ('LD_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('MOTD_SHOWN', 'update-motd'), ('HOME', '/home/auric'), ('TERM_PROGRAM_VERSION', '3.13.25'), ('VSCODE_IPC_HOOK_CLI', '/run/user/1000/vscode-ipc-275e843d-a001-4e2f-a08a-5b87735c3d51.sock'), ('ROS_PYTHON_VERSION', '3'), ('VSCODE_GIT_ASKPASS_MAIN', '/home/auric/.cursor-server/bin/31e8d61c448c7472e371505838a0fe34083dad50/extensions/git/dist/askpass-main.js'), ('VSCODE_GIT_ASKPASS_NODE', '/home/auric/.cursor-server/bin/31e8d61c448c7472e371505838a0fe34083dad50/node'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('WSL_DISTRO_NAME', 'Ubuntu-22.04'), ('WAYLAND_DISPLAY', 'wayland-0'), ('ROS_DISTRO', 'humble'), ('OVSX_REGISTRY_URL', 'https://open-vsx.org'), ('LOGNAME', 'auric'), ('NAME', 'Aurick'), ('WSL_INTEROP', '/run/WSL/557_interop'), ('PULSE_SERVER', 'unix:/mnt/wslg/PulseServer'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('TERM', 'xterm-256color'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/home/auric/.cursor-server/bin/31e8d61c448c7472e371505838a0fe34083dad50/bin/remote-cli:/usr/lib/ccache:/home/auric/ardupilot/Tools/autotest:/opt/gcc-arm-none-eabi-10-2020-q4-major/bin:/home/auric/.local/bin:/opt/ros/humble/bin:/home/auric/.cursor-server/bin/31e8d61c448c7472e371505838a0fe34083dad50/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/MATLAB/R2025a/bin:/mnt/c/Program Files/nodejs/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/MATLAB/MATLAB Runtime/R2024a/runtime/win64:/mnt/c/Program Files/cursor/resources/app/bin:/mnt/c/Program Files (x86)/Windows Kits/8.1/Windows Performance Toolkit/:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/Program Files (x86)/MAVProxy:/mnt/c/Program Files/Microsoft VS Code/bin:/mnt/c/Users/auric/AppData/Local/Programs/cursor/resources/app/codeBin:/mnt/c/Users/auric/AppData/Local/Programs/Python/Launcher/:/mnt/c/Users/auric/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/auric/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/auric/AppData/Local/Programs/cursor/resources/app/bin:/mnt/c/Users/auric/AppData/Roaming/npm:/mnt/c/Users/auric/AppData/Local/Programs/Ollama:/mnt/c/Users/auric/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1.2-full_build/bin:/mnt/c/Users/auric/AppData/Local/Microsoft/WinGet/Packages/Ngrok.Ngrok_Microsoft.Winget.Source_8wekyb3d8bbwe:/snap/bin:/home/auric/.local/bin:/home/auric/.local/bin'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('LANG', 'en_US.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('VSCODE_GIT_IPC_HANDLE', '/run/user/1000/vscode-git-aaf44574ca.sock'), ('TERM_PROGRAM', 'vscode'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('SHELL', '/bin/bash'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('VSCODE_GIT_IPC_AUTH_TOKEN', '65d2981e2b8368fc54d89495489194b8075d16b05ea7fe19787b1e52afa02975'), ('VSCODE_GIT_ASKPASS_EXTRA_ARGS', ''), ('PWD', '/home/auric/ros2_ws/TeleARM/build/TeleARM'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('WSL2_GUI_APPS_ENABLED', '1'), ('HOSTTYPE', 'x86_64'), ('WSLENV', ''), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[11.740526] (-) TimerEvent: {}
+[11.857392] (-) TimerEvent: {}
+[11.866224] (TeleARM) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[11.870875] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/launch\n'}
+[11.873641] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/launch/online_async_launch.py\n'}
+[11.874471] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/launch/display.launch.py\n'}
+[11.875242] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/launch/gazebo.launch.py\n'}
+[11.875997] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/launch/mapper_params_online_async.yaml\n'}
+[11.876831] (TeleARM) StdoutLine: {'line': b'-- Installing: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/launch/navigation.launch.py\n'}
+[11.882698] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/launch/__pycache__\n'}
+[11.884930] (TeleARM) StdoutLine: {'line': b'-- Installing: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/launch/__pycache__/gazebo.launch.cpython-310.pyc\n'}
+[11.894294] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/urdf\n'}
+[11.896093] (TeleARM) StdoutLine: {'line': b'-- Installing: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/urdf/telearm.urdf.xacro\n'}
+[11.897269] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/config\n'}
+[11.898773] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/config/slam_config.rviz\n'}
+[11.913271] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/config/diff_drive_controller.yaml\n'}
+[11.915423] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/config/slam.rviz\n'}
+[11.927752] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/config/nav2_params.yaml\n'}
+[11.930307] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/meshes\n'}
+[11.931004] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/meshes/body.STL\n'}
+[11.932772] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/meshes/window.STL\n'}
+[11.947704] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/meshes/.gitkeep\n'}
+[11.948609] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/meshes/wheel.STL\n'}
+[11.950320] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/worlds\n'}
+[11.950937] (TeleARM) StdoutLine: {'line': b'-- Installing: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/worlds/storage_warehouse.world\n'}
+[11.965040] (-) TimerEvent: {}
+[11.966381] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/rviz\n'}
+[11.968360] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/rviz/telearm.rviz\n'}
+[11.969167] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/diff_drive_publisher.py\n'}
+[11.983092] (TeleARM) StdoutLine: {'line': b'-- Installing: /home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/gripper_publisher.py\n'}
+[11.984918] (TeleARM) StdoutLine: {'line': b'-- Installing: /home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/box_detector.py\n'}
+[11.986275] (TeleARM) StdoutLine: {'line': b'-- Installing: /home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/mission.py\n'}
+[11.999982] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/cleanup_controller.py\n'}
+[12.002613] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/cmd_vel_relay.py\n'}
+[12.008005] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/ament_index/resource_index/package_run_dependencies/TeleARM\n'}
+[12.014930] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/ament_index/resource_index/parent_prefix_path/TeleARM\n'}
+[12.027884] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/environment/ament_prefix_path.sh\n'}
+[12.029476] (TeleARM) StdoutLine: {'line': b'-- Installing: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/environment/ament_prefix_path.dsv\n'}
+[12.034161] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/environment/path.sh\n'}
+[12.038864] (TeleARM) StdoutLine: {'line': b'-- Installing: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/environment/path.dsv\n'}
+[12.040188] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/local_setup.bash\n'}
+[12.040832] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/local_setup.sh\n'}
+[12.050471] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/local_setup.zsh\n'}
+[12.056001] (TeleARM) StdoutLine: {'line': b'-- Installing: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/local_setup.dsv\n'}
+[12.059017] (TeleARM) StdoutLine: {'line': b'-- Installing: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/package.dsv\n'}
+[12.060859] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/ament_index/resource_index/packages/TeleARM\n'}
+[12.062959] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/cmake/TeleARMConfig.cmake\n'}
+[12.065874] (-) TimerEvent: {}
+[12.066944] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/cmake/TeleARMConfig-version.cmake\n'}
+[12.069819] (TeleARM) StdoutLine: {'line': b'-- Up-to-date: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/package.xml\n'}
+[12.083790] (TeleARM) CommandEnded: {'returncode': 0}
+[12.176382] (-) TimerEvent: {}
+[12.290129] (-) TimerEvent: {}
+[12.402282] (-) TimerEvent: {}
+[12.513727] (-) TimerEvent: {}
+[12.552773] (TeleARM) JobEnded: {'identifier': 'TeleARM', 'rc': 0}
+[12.576765] (-) EventReactorShutdown: {}

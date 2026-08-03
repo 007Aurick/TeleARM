@@ -1,80 +1,89 @@
 #!/usr/bin/env python3
-"""Classify front obstacles using dual-height rays.
+"""Detect colored warehouse boxes from the RGB camera.
 
-  /scan      (low)  — sees short boxes and tall walls
-  /scan_high (high) — sees walls / racks only
-
-  box ahead  = low blocked, high clear
-  wall ahead = both blocked
+Publishes /detected_box_color as: orange | blue | green | red | none
 """
 
 import math
 
+import numpy as np
 import rclpy
 from rclpy.node import Node
-from sensor_msgs.msg import LaserScan
-from std_msgs.msg import Bool, Float32, String
+from sensor_msgs.msg import Image
+from std_msgs.msg import String
+
+
+COLORS = {
+    'orange': (255, 128, 13),
+    'blue': (26, 102, 255),
+    'green': (38, 217, 64),
+    'red': (255, 38, 38),
+}
 
 
 class BoxDetector(Node):
     def __init__(self):
         super().__init__('box_detector')
-        self.low = None
-        self.high = None
-        self.window = 20
-        self.block_threshold = 2.5  # meters
+        self.subscriber = self.create_subscription(
+            Image, '/camera/image_raw', self.image_callback, 10
+        )
+        self.color_pub = self.create_publisher(String, '/detected_box_color', 10)
+        self.latest_image = None
+        self.max_distance = 80.0
+        self.timer = self.create_timer(0.1, self.publish_command)
 
-        self.create_subscription(LaserScan, '/scan', self.low_cb, 10)
-        self.create_subscription(LaserScan, '/scan_high', self.high_cb, 10)
-        self.box_pub = self.create_publisher(Bool, '/box_ahead', 10)
-        self.kind_pub = self.create_publisher(String, '/front_obstacle_type', 10)
-        self.dist_pub = self.create_publisher(Float32, '/box_distance', 10)
-        self.create_timer(0.1, self.tick)
+    def image_callback(self, msg):
+        self.latest_image = msg
 
-    def low_cb(self, msg):
-        self.low = msg
+    def detect_color(self):
+        if self.latest_image is None:
+            return 'none'
 
-    def high_cb(self, msg):
-        self.high = msg
+        msg = self.latest_image
+        h, w = msg.height, msg.width
+        if h == 0 or w == 0:
+            return 'none'
 
-    def front_min(self, scan):
-        if scan is None:
-            return float('inf')
-        n = len(scan.ranges)
-        c = n // 2
-        chunk = scan.ranges[max(0, c - self.window):c + self.window]
-        vals = [r for r in chunk if math.isfinite(r) and r > 0.05]
-        return min(vals) if vals else float('inf')
+        img = np.frombuffer(msg.data, dtype=np.uint8)
+        if img.size != h * w * 3:
+            return 'none'
+        img = img.reshape((h, w, 3))
 
-    def tick(self):
-        low_d = self.front_min(self.low)
-        high_d = self.front_min(self.high)
-        low_hit = low_d < self.block_threshold
-        high_hit = high_d < self.block_threshold
+        # Center ROI
+        y0, y1 = h // 2 - h // 8, h // 2 + h // 8
+        x0, x1 = w // 2 - w // 8, w // 2 + w // 8
+        roi = img[y0:y1, x0:x1]
+        if roi.size == 0:
+            return 'none'
 
-        if low_hit and not high_hit:
-            kind = 'box'
-            is_box = True
-        elif low_hit and high_hit:
-            kind = 'wall'
-            is_box = False
-        else:
-            kind = 'clear'
-            is_box = False
+        mean_rgb = roi.reshape(-1, 3).mean(axis=0)
 
-        self.box_pub.publish(Bool(data=is_box))
-        self.kind_pub.publish(String(data=kind))
-        if is_box:
-            self.dist_pub.publish(Float32(data=float(low_d)))
+        best_name = 'none'
+        best_dist = float('inf')
+        for name, target in COLORS.items():
+            dist = math.sqrt(
+                (mean_rgb[0] - target[0]) ** 2
+                + (mean_rgb[1] - target[1]) ** 2
+                + (mean_rgb[2] - target[2]) ** 2
+            )
+            if dist < best_dist:
+                best_dist = dist
+                best_name = name
+
+        if best_dist > self.max_distance:
+            return 'none'
+        return best_name
+
+    def publish_command(self):
+        msg = String()
+        msg.data = self.detect_color()
+        self.color_pub.publish(msg)
 
 
 def main(args=None):
     rclpy.init(args=args)
     node = BoxDetector()
-    try:
-        rclpy.spin(node)
-    except KeyboardInterrupt:
-        pass
+    rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
 

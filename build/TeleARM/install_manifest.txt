@@ -17,6 +17,8 @@
 /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/rviz/telearm.rviz
 /home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/diff_drive_publisher.py
 /home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/gripper_publisher.py
+/home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/box_detector.py
+/home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/mission.py
 /home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/cleanup_controller.py
 /home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/cmd_vel_relay.py
 /home/auric/ros2_ws/TeleARM/install/TeleARM/share/ament_index/resource_index/package_run_dependencies/TeleARM

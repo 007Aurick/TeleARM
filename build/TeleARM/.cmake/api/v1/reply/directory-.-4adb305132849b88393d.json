@@ -48,7 +48,7 @@
 			{
 				"command" : 5,
 				"file" : 0,
-				"line" : 36,
+				"line" : 37,
 				"parent" : 0
 			},
 			{
@@ -253,6 +253,7 @@
 				"scripts/diff_drive_publisher.py",
 				"scripts/gripper_publisher.py",
 				"scripts/box_detector.py",
+				"scripts/mission.py",
 				"TeleARM_control/cleanup_controller.py",
 				"TeleARM_control/cmd_vel_relay.py"
 			],

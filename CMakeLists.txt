@@ -21,6 +21,7 @@ install(PROGRAMS
   scripts/diff_drive_publisher.py
   scripts/gripper_publisher.py
   scripts/box_detector.py
+  scripts/mission.py
   TeleARM_control/cleanup_controller.py
   TeleARM_control/cmd_vel_relay.py
   DESTINATION lib/${PROJECT_NAME}

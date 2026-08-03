@@ -57,6 +57,8 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/TeleARM" TYPE PROGRAM FILES
     "/home/auric/ros2_ws/TeleARM/scripts/diff_drive_publisher.py"
     "/home/auric/ros2_ws/TeleARM/scripts/gripper_publisher.py"
+    "/home/auric/ros2_ws/TeleARM/scripts/box_detector.py"
+    "/home/auric/ros2_ws/TeleARM/scripts/mission.py"
     "/home/auric/ros2_ws/TeleARM/TeleARM_control/cleanup_controller.py"
     "/home/auric/ros2_ws/TeleARM/TeleARM_control/cmd_vel_relay.py"
     )
