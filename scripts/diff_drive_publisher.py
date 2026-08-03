@@ -4,6 +4,7 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import TwistStamped
 from sensor_msgs.msg import LaserScan
+from std_msgs.msg import Bool
 
 
 class DiffDrivePublisher(Node):
@@ -20,6 +21,10 @@ class DiffDrivePublisher(Node):
             self.scan_callback,
             10
         )
+        self.wander_sub = self.create_subscription(
+            Bool, '/enable_wander', self.wander_callback, 10
+        )
+        self.wander_enabled = True
         self.latest_scan = None
         self.timer = self.create_timer(0.05, self.publish_command)
         self.ticks = 0
@@ -38,6 +43,9 @@ class DiffDrivePublisher(Node):
 
     def scan_callback(self, msg):
         self.latest_scan = msg
+
+    def wander_callback(self, msg):
+        self.wander_enabled = msg.data
 
     def get_sides(self, ranges):
         n = len(ranges)
@@ -69,6 +77,9 @@ class DiffDrivePublisher(Node):
 
 
     def publish_command(self):
+        if not self.wander_enabled:
+            return
+
         lin, ang = 0.0, 0.0
         front_distance = self.get_front_distance()
         left_distance, right_distance = self.get_sides(self.latest_scan.ranges) if self.latest_scan else (float('inf'), float('inf'))
