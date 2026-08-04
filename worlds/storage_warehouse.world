@@ -17,6 +17,14 @@
       <real_time_update_rate>1000</real_time_update_rate>
     </physics>
 
+    <!-- Publishes /gazebo/model_states so detectors use real world poses (not odom drift) -->
+    <plugin name="gazebo_ros_state" filename="libgazebo_ros_state.so">
+      <ros>
+        <namespace>/gazebo</namespace>
+      </ros>
+      <update_rate>20</update_rate>
+    </plugin>
+
     <!-- Outer walls: 32 x 22 m -->
     <model name="wall_n">
       <static>true</static>

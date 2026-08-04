@@ -18,11 +18,12 @@ from sensor_msgs.msg import LaserScan
 from std_msgs.msg import Bool, Float32, String
 
 try:
-    from gazebo_msgs.msg import EntityState
-    from gazebo_msgs.srv import GetEntityState, GetModelList, SetEntityState
+    from gazebo_msgs.msg import EntityState, ModelStates
+    from gazebo_msgs.srv import SetEntityState
     HAS_GAZEBO_MSGS = True
 except ImportError:
     HAS_GAZEBO_MSGS = False
+    ModelStates = None
 
 
 class Mission(Node):
@@ -49,6 +50,7 @@ class Mission(Node):
 
         self.latest_color = 'none'
         self.box_offset = 0.0
+        self.last_offset = 0.0
         self.latest_scan = None
         self.carried = None
         self.carried_model = None
@@ -64,25 +66,27 @@ class Mission(Node):
             'red': (14.0, -9.0),
         }
 
-        # Approach tuning
-        self.align_tol = 0.18          # |offset| under this = centered enough
-        self.grip_distance = 1.6       # meters on /scan to close forks
-        self.approach_speed = 0.35
+        # Lidar sits ~2.1 m forward; forks ~2.7 m. Close only when face is near forks.
+        self.align_tol = 0.28
+        self.grip_distance = 0.45
+        self.approach_speed = 0.32
         self.turn_gain = 0.9
-        self.search_turn = 0.35
-        self.grip_hold_ticks = 15      # ~1.5s closed before Nav2
+        self.search_turn = 0.45
+        self.grip_hold_ticks = 25
+        self.carry_forward = 2.70
+        self.lost_limit = 60          # 6s sticky track before giving up
+        self.model_states = None
 
         if HAS_GAZEBO_MSGS:
-            self.get_models_cli = self.create_client(
-                GetModelList, '/get_model_list', callback_group=self.cb_group
+            self.create_subscription(
+                ModelStates, '/gazebo/model_states', self.model_states_cb, 10
             )
-            self.get_state_cli = self.create_client(
-                GetEntityState, '/get_entity_state', callback_group=self.cb_group
-            )
+            # gazebo_ros_state exposes both; prefer namespaced service
             self.set_state_cli = self.create_client(
-                SetEntityState, '/set_entity_state', callback_group=self.cb_group
+                SetEntityState, '/gazebo/set_entity_state', callback_group=self.cb_group
             )
         else:
+            self.set_state_cli = None
             self.get_logger().warn('gazebo_msgs not available — box will not be carried in sim')
 
         self.timer = self.create_timer(0.1, self.tick, callback_group=self.cb_group)
@@ -93,6 +97,8 @@ class Mission(Node):
 
     def offset_callback(self, msg):
         self.box_offset = msg.data
+        if self.latest_color != 'none':
+            self.last_offset = msg.data
 
     def scan_callback(self, msg):
         self.latest_scan = msg
@@ -163,79 +169,63 @@ class Mission(Node):
         self.state = 'dropping'
         self.goal_sent = False
 
+    def model_states_cb(self, msg):
+        self.model_states = msg
+
+    def robot_world_pose(self):
+        if self.model_states is None:
+            return None
+        try:
+            i = self.model_states.name.index('robot')
+        except ValueError:
+            return None
+        p = self.model_states.pose[i]
+        q = p.orientation
+        siny = 2.0 * (q.w * q.z + q.x * q.y)
+        cosy = 1.0 - 2.0 * (q.y * q.y + q.z * q.z)
+        return p.position.x, p.position.y, math.atan2(siny, cosy), q
+
     def pick_nearest_box_model(self):
-        """Find Gazebo model box_<color>_* closest to the robot."""
-        if not HAS_GAZEBO_MSGS or self.carried is None:
+        """Nearest Gazebo box_<color>_* to the robot in world frame."""
+        if self.carried is None or self.model_states is None:
             return None
-        if not self.get_models_cli.wait_for_service(timeout_sec=0.5):
+        pose = self.robot_world_pose()
+        if pose is None:
             return None
-        if not self.get_state_cli.wait_for_service(timeout_sec=0.5):
-            return None
-
-        models = self.get_models_cli.call(GetModelList.Request())
-        if models is None:
-            return None
-
+        rx, ry, _, _ = pose
         prefix = f'box_{self.carried}_'
-        robot = self.get_state_cli.call(
-            GetEntityState.Request(name='robot', reference_frame='world')
-        )
-        if robot is None or not robot.success:
-            return None
-
-        rx, ry = robot.state.pose.position.x, robot.state.pose.position.y
         best_name, best_d = None, float('inf')
-        for name in models.model_names:
+        for name, p in zip(self.model_states.name, self.model_states.pose):
             if not name.startswith(prefix):
                 continue
-            st = self.get_state_cli.call(
-                GetEntityState.Request(name=name, reference_frame='world')
-            )
-            if st is None or not st.success:
-                continue
-            dx = st.state.pose.position.x - rx
-            dy = st.state.pose.position.y - ry
-            d = math.hypot(dx, dy)
+            d = math.hypot(p.position.x - rx, p.position.y - ry)
             if d < best_d:
                 best_d = d
                 best_name = name
         return best_name
 
     def glue_box_to_robot(self):
-        """Keep carried box under the chassis while delivering."""
-        if not HAS_GAZEBO_MSGS or not self.carried_model:
-            return
-        if not self.get_state_cli.service_is_ready():
+        """Keep carried box between the forks (Gazebo world frame)."""
+        if not HAS_GAZEBO_MSGS or not self.carried_model or self.set_state_cli is None:
             return
         if not self.set_state_cli.service_is_ready():
             return
-
-        robot = self.get_state_cli.call(
-            GetEntityState.Request(name='robot', reference_frame='world')
-        )
-        if robot is None or not robot.success:
+        pose = self.robot_world_pose()
+        if pose is None:
             return
-
-        # Place box slightly in front / under body (matches underbody gripper)
-        yaw = self._yaw_from_quat(robot.state.pose.orientation)
-        ox = 1.6 * math.cos(yaw)
-        oy = 1.6 * math.sin(yaw)
+        rx, ry, yaw, q = pose
+        ox = self.carry_forward * math.cos(yaw)
+        oy = self.carry_forward * math.sin(yaw)
 
         state = EntityState()
         state.name = self.carried_model
         state.pose = Pose()
-        state.pose.position.x = robot.state.pose.position.x + ox
-        state.pose.position.y = robot.state.pose.position.y + oy
-        state.pose.position.z = 0.28
-        state.pose.orientation = robot.state.pose.orientation
+        state.pose.position.x = rx + ox
+        state.pose.position.y = ry + oy
+        state.pose.position.z = 0.30
+        state.pose.orientation = q
         state.reference_frame = 'world'
-        self.set_state_cli.call(SetEntityState.Request(state=state))
-
-    @staticmethod
-    def _yaw_from_quat(q):
-        siny_cosp = 2.0 * (q.w * q.z + q.x * q.y)
-        cosy_cosp = 1.0 - 2.0 * (q.y * q.y + q.z * q.z)
-        return math.atan2(siny_cosp, cosy_cosp)
+        self.set_state_cli.call_async(SetEntityState.Request(state=state))
 
     def tick(self):
         if self.state == 'searching':
@@ -254,32 +244,31 @@ class Mission(Node):
             self.set_wander(False)
             self.send_gripper('open')
 
-            if self.latest_color != self.carried:
+            seeing = self.latest_color == self.carried
+            if seeing:
+                self.lost_ticks = 0
+                offset = self.box_offset
+            else:
                 self.lost_ticks += 1
-                if self.lost_ticks > 20:
+                front_probe = self.front_distance()
+                # Keep committing if lidar still sees something close ahead
+                if self.lost_ticks > self.lost_limit and front_probe > 2.5:
                     self.get_logger().warn('Lost box — searching again')
                     self.carried = None
                     self.state = 'searching'
                     self.set_wander(True)
-                else:
-                    # gentle turn to reacquire
-                    self.drive(0.0, self.search_turn)
-                return
-            self.lost_ticks = 0
+                    return
+                offset = self.last_offset
 
-            offset = self.box_offset
             front = self.front_distance()
             ang = -self.turn_gain * offset
-            ang = max(-0.6, min(0.6, ang))
+            ang = max(-0.7, min(0.7, ang))
 
-            if abs(offset) > self.align_tol:
-                # Align first
-                self.drive(0.1, ang)
+            if abs(offset) > self.align_tol and front > self.grip_distance + 0.3:
+                self.drive(0.12, ang)
             elif front > self.grip_distance:
-                # Centered — drive in
-                self.drive(self.approach_speed, ang * 0.5)
+                self.drive(self.approach_speed, ang * 0.4)
             else:
-                # Close enough — grip
                 self.stop_drive()
                 self.send_gripper('close')
                 self.grip_ticks = 0
@@ -332,9 +321,12 @@ def main(args=None):
     executor.add_node(node)
     try:
         executor.spin()
+    except KeyboardInterrupt:
+        pass
     finally:
         node.destroy_node()
-        rclpy.shutdown()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 
 if __name__ == '__main__':

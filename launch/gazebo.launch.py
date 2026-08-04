@@ -71,7 +71,9 @@ def launch_setup(context, *args, **kwargs):
         arguments=[
             '-topic', 'robot_description',
             '-entity', 'robot',
-            '-z', '0.5',
+            '-x', '0.0',
+            '-y', '0.0',
+            '-z', '0.35',
             '-timeout', '180.0',
         ],
         output='screen',

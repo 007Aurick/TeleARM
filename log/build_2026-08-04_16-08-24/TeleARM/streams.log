@@ -1,0 +1,62 @@
+[0.054s] Invoking command in '/home/auric/ros2_ws/TeleARM/build/TeleARM': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/auric/ros2_ws/TeleARM -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/auric/ros2_ws/TeleARM/install/TeleARM
+[0.084s] -- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.357s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[0.413s] -- Found ament_lint_auto: 0.12.15 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[0.537s] WARNING: Package name "TeleARM" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+[1.013s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[1.015s] -- Configured cppcheck include dirs: 
+[1.015s] -- Configured cppcheck exclude dirs and/or files: 
+[1.096s] -- Added test 'flake8' to check Python code syntax and style conventions
+[1.177s] -- Added test 'lint_cmake' to check CMake code style
+[1.224s] -- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+[1.548s] -- Added test 'uncrustify' to check C / C++ code style
+[1.548s] -- Configured uncrustify additional arguments: 
+[1.630s] -- Added test 'xmllint' to check XML markup files
+[1.634s] -- Configuring done
+[1.643s] -- Generating done
+[1.647s] -- Build files have been written to: /home/auric/ros2_ws/TeleARM/build/TeleARM
+[1.652s] Invoked command in '/home/auric/ros2_ws/TeleARM/build/TeleARM' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/auric/ros2_ws/TeleARM -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/auric/ros2_ws/TeleARM/install/TeleARM
+[1.656s] Invoking command in '/home/auric/ros2_ws/TeleARM/build/TeleARM': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/auric/ros2_ws/TeleARM/build/TeleARM -- -j16 -l16
+[1.725s] Invoked command in '/home/auric/ros2_ws/TeleARM/build/TeleARM' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/auric/ros2_ws/TeleARM/build/TeleARM -- -j16 -l16
+[1.743s] Invoking command in '/home/auric/ros2_ws/TeleARM/build/TeleARM': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/auric/ros2_ws/TeleARM/build/TeleARM
+[1.761s] -- Install configuration: ""
+[1.764s] -- Execute custom install script
+[1.764s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/launch/__pycache__/gazebo.launch.cpython-310.pyc
+[1.781s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/launch/display.launch.py
+[1.803s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/launch/gazebo.launch.py
+[1.823s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/launch/mapper_params_online_async.yaml
+[1.842s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/launch/navigation.launch.py
+[1.860s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/launch/online_async_launch.py
+[1.877s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/urdf/telearm.urdf.xacro
+[1.900s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/config/diff_drive_controller.yaml
+[1.918s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/config/nav2_params.yaml
+[1.939s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/config/slam.rviz
+[1.964s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/config/slam_config.rviz
+[1.978s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/meshes/.gitkeep
+[1.992s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/meshes/body.STL
+[2.010s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/meshes/wheel.STL
+[2.027s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/meshes/window.STL
+[2.047s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/worlds/storage_warehouse.world
+[2.067s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/rviz/telearm.rviz
+[2.084s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/diff_drive_publisher.py
+[2.102s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/gripper_publisher.py
+[2.120s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/sim_box_detector.py
+[2.137s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/mission.py
+[2.153s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/cleanup_controller.py
+[2.173s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/lib/TeleARM/cmd_vel_relay.py
+[2.195s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/ament_index/resource_index/package_run_dependencies/TeleARM
+[2.215s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/ament_index/resource_index/parent_prefix_path/TeleARM
+[2.241s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/environment/ament_prefix_path.sh
+[2.301s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/environment/ament_prefix_path.dsv
+[2.318s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/environment/path.sh
+[2.338s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/environment/path.dsv
+[2.357s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/local_setup.bash
+[2.383s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/local_setup.sh
+[2.398s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/local_setup.zsh
+[2.415s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/local_setup.dsv
+[2.430s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/package.dsv
+[2.449s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/ament_index/resource_index/packages/TeleARM
+[2.469s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/cmake/TeleARMConfig.cmake
+[2.490s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/cmake/TeleARMConfig-version.cmake
+[2.513s] -- Symlinking: /home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/package.xml
+[2.538s] Invoked command in '/home/auric/ros2_ws/TeleARM/build/TeleARM' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/auric/ros2_ws/TeleARM/build/TeleARM

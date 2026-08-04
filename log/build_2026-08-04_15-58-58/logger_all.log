@@ -1,0 +1,105 @@
+[2.265s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build', '--packages-select', 'TeleARM']
+[2.266s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=16, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=['TeleARM'], packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, mixin_files=None, mixin=None, verb_parser=<colcon_mixin.mixin.mixin_argument.MixinArgumentDecorator object at 0x70af063638e0>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x70af063632e0>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x70af063632e0>>, mixin_verb=('build',))
+[2.869s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[2.870s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[2.871s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[2.871s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[2.872s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[2.873s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[2.873s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/auric/ros2_ws/TeleARM'
+[2.874s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[2.875s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[2.876s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[2.877s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[2.877s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[2.878s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[2.878s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[2.879s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[2.879s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[3.057s] DEBUG:colcon.colcon_core.package_identification:Package '.' with type 'ros.ament_cmake' and name 'TeleARM'
+[3.058s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[3.059s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[3.059s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[3.059s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[3.060s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[3.302s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[3.303s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[3.348s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 425 installed packages in /opt/ros/humble
+[3.367s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[3.839s] Level 5:colcon.colcon_core.verb:set package 'TeleARM' build argument 'cmake_args' from command line to 'None'
+[3.840s] Level 5:colcon.colcon_core.verb:set package 'TeleARM' build argument 'cmake_target' from command line to 'None'
+[3.840s] Level 5:colcon.colcon_core.verb:set package 'TeleARM' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[3.841s] Level 5:colcon.colcon_core.verb:set package 'TeleARM' build argument 'cmake_clean_cache' from command line to 'False'
+[3.841s] Level 5:colcon.colcon_core.verb:set package 'TeleARM' build argument 'cmake_clean_first' from command line to 'False'
+[3.841s] Level 5:colcon.colcon_core.verb:set package 'TeleARM' build argument 'cmake_force_configure' from command line to 'False'
+[3.841s] Level 5:colcon.colcon_core.verb:set package 'TeleARM' build argument 'ament_cmake_args' from command line to 'None'
+[3.841s] Level 5:colcon.colcon_core.verb:set package 'TeleARM' build argument 'catkin_cmake_args' from command line to 'None'
+[3.841s] Level 5:colcon.colcon_core.verb:set package 'TeleARM' build argument 'catkin_skip_building_tests' from command line to 'False'
+[3.842s] DEBUG:colcon.colcon_core.verb:Building package 'TeleARM' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/auric/ros2_ws/TeleARM/build/TeleARM', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/auric/ros2_ws/TeleARM/install/TeleARM', 'merge_install': False, 'path': '/home/auric/ros2_ws/TeleARM', 'symlink_install': False, 'test_result_base': None}
+[3.843s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[3.850s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[3.853s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/auric/ros2_ws/TeleARM' with build type 'ament_cmake'
+[3.855s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/auric/ros2_ws/TeleARM'
+[3.900s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[3.901s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[3.902s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[4.035s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/auric/ros2_ws/TeleARM/build/TeleARM': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/auric/ros2_ws/TeleARM/build/TeleARM -- -j16 -l16
+[4.627s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/auric/ros2_ws/TeleARM/build/TeleARM' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/auric/ros2_ws/TeleARM/build/TeleARM -- -j16 -l16
+[4.719s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/auric/ros2_ws/TeleARM/build/TeleARM': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/auric/ros2_ws/TeleARM/build/TeleARM
+[4.855s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(TeleARM)
+[4.894s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/auric/ros2_ws/TeleARM/build/TeleARM' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/auric/ros2_ws/TeleARM/build/TeleARM
+[4.925s] Level 1:colcon.colcon_core.environment:checking '/home/auric/ros2_ws/TeleARM/install/TeleARM' for CMake module files
+[4.932s] Level 1:colcon.colcon_core.environment:checking '/home/auric/ros2_ws/TeleARM/install/TeleARM' for CMake config files
+[4.936s] Level 1:colcon.colcon_core.shell:create_environment_hook('TeleARM', 'cmake_prefix_path')
+[4.938s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/hook/cmake_prefix_path.ps1'
+[4.948s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/hook/cmake_prefix_path.dsv'
+[4.954s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/hook/cmake_prefix_path.sh'
+[4.964s] Level 1:colcon.colcon_core.environment:checking '/home/auric/ros2_ws/TeleARM/install/TeleARM/lib'
+[4.966s] Level 1:colcon.colcon_core.environment:checking '/home/auric/ros2_ws/TeleARM/install/TeleARM/bin'
+[4.967s] Level 1:colcon.colcon_core.environment:checking '/home/auric/ros2_ws/TeleARM/install/TeleARM/lib/pkgconfig/TeleARM.pc'
+[4.970s] Level 1:colcon.colcon_core.environment:checking '/home/auric/ros2_ws/TeleARM/install/TeleARM/lib/python3.10/site-packages'
+[4.974s] Level 1:colcon.colcon_core.environment:checking '/home/auric/ros2_ws/TeleARM/install/TeleARM/bin'
+[4.976s] INFO:colcon.colcon_core.shell:Creating package script '/home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/package.ps1'
+[4.986s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/package.dsv'
+[4.994s] INFO:colcon.colcon_core.shell:Creating package script '/home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/package.sh'
+[5.001s] INFO:colcon.colcon_core.shell:Creating package script '/home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/package.bash'
+[5.011s] INFO:colcon.colcon_core.shell:Creating package script '/home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/package.zsh'
+[5.021s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/auric/ros2_ws/TeleARM/install/TeleARM/share/colcon-core/packages/TeleARM)
+[5.027s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(TeleARM)
+[5.029s] Level 1:colcon.colcon_core.environment:checking '/home/auric/ros2_ws/TeleARM/install/TeleARM' for CMake module files
+[5.033s] Level 1:colcon.colcon_core.environment:checking '/home/auric/ros2_ws/TeleARM/install/TeleARM' for CMake config files
+[5.035s] Level 1:colcon.colcon_core.shell:create_environment_hook('TeleARM', 'cmake_prefix_path')
+[5.036s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/hook/cmake_prefix_path.ps1'
+[5.040s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/hook/cmake_prefix_path.dsv'
+[5.043s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/hook/cmake_prefix_path.sh'
+[5.050s] Level 1:colcon.colcon_core.environment:checking '/home/auric/ros2_ws/TeleARM/install/TeleARM/lib'
+[5.051s] Level 1:colcon.colcon_core.environment:checking '/home/auric/ros2_ws/TeleARM/install/TeleARM/bin'
+[5.052s] Level 1:colcon.colcon_core.environment:checking '/home/auric/ros2_ws/TeleARM/install/TeleARM/lib/pkgconfig/TeleARM.pc'
+[5.054s] Level 1:colcon.colcon_core.environment:checking '/home/auric/ros2_ws/TeleARM/install/TeleARM/lib/python3.10/site-packages'
+[5.056s] Level 1:colcon.colcon_core.environment:checking '/home/auric/ros2_ws/TeleARM/install/TeleARM/bin'
+[5.059s] INFO:colcon.colcon_core.shell:Creating package script '/home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/package.ps1'
+[5.065s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/package.dsv'
+[5.069s] INFO:colcon.colcon_core.shell:Creating package script '/home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/package.sh'
+[5.074s] INFO:colcon.colcon_core.shell:Creating package script '/home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/package.bash'
+[5.080s] INFO:colcon.colcon_core.shell:Creating package script '/home/auric/ros2_ws/TeleARM/install/TeleARM/share/TeleARM/package.zsh'
+[5.085s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/auric/ros2_ws/TeleARM/install/TeleARM/share/colcon-core/packages/TeleARM)
+[5.088s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[5.093s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[5.093s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[5.094s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[5.524s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.notify_send': Could not find 'notify-send'
+[5.525s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[5.526s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[5.526s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[5.528s] DEBUG:colcon.colcon_notification.desktop_notification.notify2:Failed to initialize notify2: org.freedesktop.DBus.Error.FileNotFound: Failed to connect to socket /run/user/1000/bus: No such file or directory
+[5.530s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[5.533s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/auric/ros2_ws/TeleARM/install/local_setup.ps1'
+[5.549s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/auric/ros2_ws/TeleARM/install/_local_setup_util_ps1.py'
+[5.567s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/auric/ros2_ws/TeleARM/install/setup.ps1'
+[5.581s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/auric/ros2_ws/TeleARM/install/local_setup.sh'
+[5.593s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/auric/ros2_ws/TeleARM/install/_local_setup_util_sh.py'
+[5.601s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/auric/ros2_ws/TeleARM/install/setup.sh'
+[5.615s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/auric/ros2_ws/TeleARM/install/local_setup.bash'
+[5.628s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/auric/ros2_ws/TeleARM/install/setup.bash'
+[5.640s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/auric/ros2_ws/TeleARM/install/local_setup.zsh'
+[5.651s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/auric/ros2_ws/TeleARM/install/setup.zsh'

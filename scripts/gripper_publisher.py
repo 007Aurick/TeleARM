@@ -12,7 +12,7 @@ class GripperPublisher(Node):
         self.command = None
         self.timer = self.create_timer(0.05, self.publish_command)
         self.close_pos = 0.0
-        self.open_pos = 0.35
+        self.open_pos = 0.40   # wide enough for 0.55 m boxes
     
     def command_callback(self, msg):
         self.command = msg.data

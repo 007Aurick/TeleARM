@@ -1,2 +1,1 @@
-source;share/TeleARM/environment/ament_prefix_path.sh
-source;share/TeleARM/environment/path.sh
+/home/auric/ros2_ws/TeleARM/build/TeleARM/ament_cmake_environment_hooks/local_setup.dsv

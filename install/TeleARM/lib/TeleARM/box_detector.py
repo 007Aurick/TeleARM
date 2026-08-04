@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Detect colored warehouse boxes from the RGB camera.
 
-Publishes /detected_box_color as: orange | blue | green | red | none
+Publishes:
+  /detected_box_color  (String)  orange|blue|green|red|none
+  /box_offset          (Float32) -1 left ... +1 right (color blob centroid)
 """
 
 import math
@@ -10,7 +12,7 @@ import numpy as np
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
-from std_msgs.msg import String
+from std_msgs.msg import Float32, String
 
 
 COLORS = {
@@ -28,56 +30,66 @@ class BoxDetector(Node):
             Image, '/camera/image_raw', self.image_callback, 10
         )
         self.color_pub = self.create_publisher(String, '/detected_box_color', 10)
+        self.offset_pub = self.create_publisher(Float32, '/box_offset', 10)
         self.latest_image = None
-        self.max_distance = 80.0
+        self.max_distance = 90.0
         self.timer = self.create_timer(0.1, self.publish_command)
 
     def image_callback(self, msg):
         self.latest_image = msg
 
-    def detect_color(self):
+    def detect(self):
+        """Return (color_name, lateral_offset)."""
         if self.latest_image is None:
-            return 'none'
+            return 'none', 0.0
 
         msg = self.latest_image
         h, w = msg.height, msg.width
         if h == 0 or w == 0:
-            return 'none'
+            return 'none', 0.0
 
         img = np.frombuffer(msg.data, dtype=np.uint8)
         if img.size != h * w * 3:
-            return 'none'
-        img = img.reshape((h, w, 3))
+            return 'none', 0.0
+        img = img.reshape((h, w, 3)).astype(np.float32)
 
-        # Center ROI
-        y0, y1 = h // 2 - h // 8, h // 2 + h // 8
-        x0, x1 = w // 2 - w // 8, w // 2 + w // 8
+        # Lower-center band — floor boxes ahead of the camera
+        y0, y1 = int(h * 0.35), int(h * 0.95)
+        x0, x1 = int(w * 0.1), int(w * 0.9)
         roi = img[y0:y1, x0:x1]
         if roi.size == 0:
-            return 'none'
-
-        mean_rgb = roi.reshape(-1, 3).mean(axis=0)
+            return 'none', 0.0
 
         best_name = 'none'
-        best_dist = float('inf')
-        for name, target in COLORS.items():
-            dist = math.sqrt(
-                (mean_rgb[0] - target[0]) ** 2
-                + (mean_rgb[1] - target[1]) ** 2
-                + (mean_rgb[2] - target[2]) ** 2
-            )
-            if dist < best_dist:
-                best_dist = dist
-                best_name = name
+        best_score = 0
+        best_offset = 0.0
+        thresh = self.max_distance
 
-        if best_dist > self.max_distance:
-            return 'none'
-        return best_name
+        for name, target in COLORS.items():
+            diff = roi - np.array(target, dtype=np.float32)
+            dist = np.sqrt(np.sum(diff * diff, axis=2))
+            mask = dist < thresh
+            count = int(mask.sum())
+            if count < 30:
+                continue
+            if count > best_score:
+                best_score = count
+                best_name = name
+                ys, xs = np.where(mask)
+                # centroid x in full image coords → [-1, 1]
+                cx = float(xs.mean()) + x0
+                best_offset = (cx / w) * 2.0 - 1.0
+
+        return best_name, best_offset
 
     def publish_command(self):
-        msg = String()
-        msg.data = self.detect_color()
-        self.color_pub.publish(msg)
+        color, offset = self.detect()
+        cmsg = String()
+        cmsg.data = color
+        self.color_pub.publish(cmsg)
+        omsg = Float32()
+        omsg.data = float(offset) if color != 'none' else 0.0
+        self.offset_pub.publish(omsg)
 
 
 def main(args=None):
