@@ -248,10 +248,10 @@ ros2 launch TeleARM display.launch.py
 - [x] Autonomous pick → color-pad delivery loop
 - [x] On-pad drop slots (no pad-marker confusion; black cube edges)
 - [x] Optional `slam_toolbox` + Nav2 launch files
-- [ ] More robust physics-only grasp (less `set_entity_state` assist)
-- [ ] Reliable RGB detection path on WSL / GPU setups
-- [ ] Full Nav2 handoff for long-range delivery
-- [ ] MoveIt2 / articulated arm variant
+- [x] More robust physics-only grasp (less `set_entity_state` assist)
+- [x] Reliable RGB detection path on WSL / GPU setups
+- [x] Full Nav2 handoff for long-range delivery
+- [x] MoveIt2 / articulated arm variant
 
 ---
 
