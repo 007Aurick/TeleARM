@@ -289,3 +289,13 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 <p align="center">
   <b>TeleARM</b> — wander · detect · pick · sort · repeat 🚚📦
 </p>
+
+## 🚀 Demo
+
+![Preview](https://img.youtube.com/vi/wBmdwQ1g708/0.jpg)
+
+▶️ Full Demo: https://www.youtube.com/watch?v=wBmdwQ1g708
+
+## Author
+
+**Aurick Anwar**
