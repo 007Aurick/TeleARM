@@ -1,0 +1,4 @@
+Invoking command in '/home/auric/ros2_ws/TeleARM/build/TeleARM': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/auric/ros2_ws/TeleARM/build/TeleARM -- -j16 -l16
+Invoked command in '/home/auric/ros2_ws/TeleARM/build/TeleARM' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/auric/ros2_ws/TeleARM/build/TeleARM -- -j16 -l16
+Invoking command in '/home/auric/ros2_ws/TeleARM/build/TeleARM': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/auric/ros2_ws/TeleARM/build/TeleARM
+Invoked command in '/home/auric/ros2_ws/TeleARM/build/TeleARM' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/auric/ros2_ws/TeleARM/build/TeleARM

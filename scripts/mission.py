@@ -1,329 +1,491 @@
 #!/usr/bin/env python3
-"""Mission: search -> approach/align box -> grip -> Nav2 to pad -> drop.
-
-Also mutes /diff_drive_publisher while controlling the base, and keeps the
-picked Gazebo box glued under the robot while delivering.
-"""
+"""Wander → pick colored box → deliver to matching pad → drop → repeat."""
 
 import math
 
 import rclpy
-from rclpy.action import ActionClient
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.executors import MultiThreadedExecutor
 from rclpy.node import Node
+from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from geometry_msgs.msg import Pose, TwistStamped
-from nav2_msgs.action import NavigateToPose
 from sensor_msgs.msg import LaserScan
-from std_msgs.msg import Bool, Float32, String
+from std_msgs.msg import Bool, String
 
 try:
     from gazebo_msgs.msg import EntityState, ModelStates
     from gazebo_msgs.srv import SetEntityState
-    HAS_GAZEBO_MSGS = True
+    HAS_GAZEBO = True
 except ImportError:
-    HAS_GAZEBO_MSGS = False
+    HAS_GAZEBO = False
     ModelStates = None
+
+
+COLORS = ('orange', 'blue', 'green', 'red')
 
 
 class Mission(Node):
     def __init__(self):
         super().__init__('mission')
-        self.cb_group = ReentrantCallbackGroup()
-        self.color_sub = self.create_subscription(
-            String, '/detected_box_color', self.color_callback, 10
+        self.cb = ReentrantCallbackGroup()
+        latch = QoSProfile(
+            depth=1,
+            reliability=ReliabilityPolicy.RELIABLE,
+            durability=DurabilityPolicy.TRANSIENT_LOCAL,
         )
-        self.offset_sub = self.create_subscription(
-            Float32, '/box_offset', self.offset_callback, 10
-        )
-        self.scan_sub = self.create_subscription(
-            LaserScan, '/scan', self.scan_callback, 10
-        )
-        self.gripper_pub = self.create_publisher(String, '/gripper_command', 10)
+
         self.cmd_pub = self.create_publisher(
             TwistStamped, '/diff_drive_base_controller/cmd_vel', 10
         )
-        self.wander_enable_pub = self.create_publisher(Bool, '/enable_wander', 10)
-        self.nav_client = ActionClient(
-            self, NavigateToPose, 'navigate_to_pose', callback_group=self.cb_group
-        )
+        self.gripper_pub = self.create_publisher(String, '/gripper_command', 10)
+        self.wander_pub = self.create_publisher(Bool, '/enable_wander', latch)
+        self.create_subscription(LaserScan, '/scan', self.on_scan, 10)
 
-        self.latest_color = 'none'
-        self.box_offset = 0.0
-        self.last_offset = 0.0
-        self.latest_scan = None
-        self.carried = None
-        self.carried_model = None
+        self.scan = None
+        self.models = None
         self.state = 'searching'
-        self.goal_sent = False
-        self.grip_ticks = 0
-        self.lost_ticks = 0
+        self.color = None
+        self.target = None
+        self.holding = False
+        self.grip_t = 0
+        self.lost_t = 0
+        self.avoid_t = 0
+        self.avoid_dir = 1
+        self.stuck_t = 0
+        self.last_goal_d = None
+        self.turn_sign = 0
+        self.hold_tick = 0
+        self.drop_t = 0
+        self.drop_turn = 0
+        self.drop_xy = None
+        self._wander = None
+        self.drop_counts = {c: 0 for c in COLORS}
+        self.box_half = 0.45
 
         self.pads = {
-            'orange': (-14.0, 9.0),
-            'blue': (14.0, 9.0),
-            'green': (-14.0, -9.0),
-            'red': (14.0, -9.0),
+            'orange': (-22.0, 15.0),
+            'blue': (22.0, 15.0),
+            'green': (-22.0, -15.0),
+            'red': (22.0, -15.0),
         }
 
-        # Lidar sits ~2.1 m forward; forks ~2.7 m. Close only when face is near forks.
-        self.align_tol = 0.28
-        self.grip_distance = 0.45
-        self.approach_speed = 0.32
-        self.turn_gain = 0.9
-        self.search_turn = 0.45
-        self.grip_hold_ticks = 25
-        self.carry_forward = 2.70
-        self.lost_limit = 60          # 6s sticky track before giving up
-        self.model_states = None
+        # Tuned for ~0.90 m boxes + scaled forklift (S=1.35, forks ~x=3.17)
+        self.grip_fwd = 3.70
+        self.lat_ok = 0.28
+        self.detect_range = 9.0
+        self.fov = 1.0
+        self.pad_ok = 3.2
+        self.carry_fwd = 3.70
+        self.box_spacing = 1.40
 
-        if HAS_GAZEBO_MSGS:
-            self.create_subscription(
-                ModelStates, '/gazebo/model_states', self.model_states_cb, 10
-            )
-            # gazebo_ros_state exposes both; prefer namespaced service
-            self.set_state_cli = self.create_client(
-                SetEntityState, '/gazebo/set_entity_state', callback_group=self.cb_group
+        self.set_state = None
+        if HAS_GAZEBO:
+            self.create_subscription(ModelStates, '/gazebo/model_states', self.on_models, 10)
+            self.set_state = self.create_client(
+                SetEntityState, '/gazebo/set_entity_state', callback_group=self.cb
             )
         else:
-            self.set_state_cli = None
-            self.get_logger().warn('gazebo_msgs not available — box will not be carried in sim')
+            self.get_logger().error('gazebo_msgs missing')
 
-        self.timer = self.create_timer(0.1, self.tick, callback_group=self.cb_group)
-        self.get_logger().info('Mission ready (search → approach → grip → deliver)')
+        self.create_timer(0.1, self.tick, callback_group=self.cb)
+        self.enable_wander(False)
+        self.get_logger().info('Mission: find box → pick → color pad → drop')
 
-    def color_callback(self, msg):
-        self.latest_color = msg.data
+    def on_scan(self, msg):
+        self.scan = msg
 
-    def offset_callback(self, msg):
-        self.box_offset = msg.data
-        if self.latest_color != 'none':
-            self.last_offset = msg.data
+    def on_models(self, msg):
+        self.models = msg
 
-    def scan_callback(self, msg):
-        self.latest_scan = msg
+    def enable_wander(self, on):
+        if self._wander is on:
+            return
+        self._wander = on
+        msg = Bool()
+        msg.data = on
+        self.wander_pub.publish(msg)
 
-    def send_gripper(self, command):
+    def gripper(self, cmd):
         msg = String()
-        msg.data = command
+        msg.data = cmd
         self.gripper_pub.publish(msg)
 
-    def set_wander(self, enabled: bool):
-        msg = Bool()
-        msg.data = enabled
-        self.wander_enable_pub.publish(msg)
+    def drive(self, v, w):
+        m = TwistStamped()
+        m.header.stamp = self.get_clock().now().to_msg()
+        m.header.frame_id = 'body'
+        m.twist.linear.x = float(v)
+        m.twist.angular.z = float(w)
+        self.cmd_pub.publish(m)
 
-    def drive(self, linear_x: float, angular_z: float):
-        cmd = TwistStamped()
-        cmd.header.stamp = self.get_clock().now().to_msg()
-        cmd.header.frame_id = 'body'
-        cmd.twist.linear.x = float(linear_x)
-        cmd.twist.angular.z = float(angular_z)
-        self.cmd_pub.publish(cmd)
-
-    def stop_drive(self):
+    def stop(self):
         self.drive(0.0, 0.0)
 
-    def front_distance(self):
-        if self.latest_scan is None or not self.latest_scan.ranges:
+    @staticmethod
+    def wrap(a):
+        while a > math.pi:
+            a -= 2.0 * math.pi
+        while a < -math.pi:
+            a += 2.0 * math.pi
+        return a
+
+    @staticmethod
+    def yaw_of(q):
+        return math.atan2(
+            2.0 * (q.w * q.z + q.x * q.y),
+            1.0 - 2.0 * (q.y * q.y + q.z * q.z),
+        )
+
+    def robot_pose(self):
+        if self.models is None:
+            return None
+        try:
+            i = self.models.name.index('robot')
+        except ValueError:
+            return None
+        p = self.models.pose[i]
+        return p.position.x, p.position.y, self.yaw_of(p.orientation), p.orientation
+
+    def ranges(self, lo, hi, min_r=0.08):
+        if self.scan is None or not self.scan.ranges:
             return float('inf')
-        n = len(self.latest_scan.ranges)
-        center = n // 2
-        window = max(n // 12, 1)
+        n = len(self.scan.ranges)
+        a, b = int(n * lo), max(int(n * lo) + 1, int(n * hi))
         vals = [
-            r for r in self.latest_scan.ranges[center - window:center + window]
-            if r > 0.05 and math.isfinite(r)
+            r for r in self.scan.ranges[a:b]
+            if r > min_r and math.isfinite(r)
         ]
         return min(vals) if vals else float('inf')
 
-    def send_to_pad(self):
-        if self.carried not in self.pads:
-            return
-        if not self.nav_client.wait_for_server(timeout_sec=1.0):
-            self.get_logger().warn('Nav2 not ready')
-            return
+    def front(self):
+        return self.ranges(0.42, 0.58)
 
-        x, y = self.pads[self.carried]
-        goal = NavigateToPose.Goal()
-        goal.pose.header.frame_id = 'map'
-        goal.pose.header.stamp = self.get_clock().now().to_msg()
-        goal.pose.pose.position.x = x
-        goal.pose.pose.position.y = y
-        goal.pose.pose.orientation.w = 1.0
+    def front_obstacle(self, carrying=False):
+        """Wall/rack ahead. When carrying, ignore near hits (= the box in forks)."""
+        if carrying:
+            return self.ranges(0.38, 0.62, min_r=1.55)
+        return self.ranges(0.38, 0.62, min_r=0.12)
 
-        self.get_logger().info(f'Nav2 → {self.carried} pad ({x}, {y})')
-        fut = self.nav_client.send_goal_async(goal)
-        fut.add_done_callback(self.goal_response_callback)
-        self.goal_sent = True
+    def open_side(self):
+        left = self.ranges(0.55, 0.85, min_r=0.3)
+        right = self.ranges(0.15, 0.45, min_r=0.3)
+        return 1 if left >= right else -1
 
-    def goal_response_callback(self, future):
-        goal_handle = future.result()
-        if not goal_handle.accepted:
-            self.get_logger().warn('Nav2 goal rejected')
-            self.goal_sent = False
-            return
-        goal_handle.get_result_async().add_done_callback(self.nav_result_callback)
+    def near_pad(self, color, bx, by):
+        """Skip boxes already stacked on their color pad."""
+        px, py = self.pads[color]
+        return math.hypot(bx - px, by - py) < 7.0
 
-    def nav_result_callback(self, _future):
-        self.get_logger().info('Arrived at drop pad — dropping')
-        self.state = 'dropping'
-        self.goal_sent = False
+    def pad_drop_xy(self, color):
+        """Slot ON the colored pad (marker overlap OK). Grid so later boxes don't kick earlier ones."""
+        px, py = self.pads[color]
+        n = self.drop_counts[color]
+        # 4x4 pad; 0.90 m boxes with black border — pack in a tight on-pad grid
+        slots = (
+            (0.0, 0.0),
+            (1.15, 0.0),
+            (-1.15, 0.0),
+            (0.0, 1.15),
+            (0.0, -1.15),
+            (1.15, 1.15),
+            (-1.15, 1.15),
+            (1.15, -1.15),
+            (-1.15, -1.15),
+        )
+        ox, oy = slots[n % len(slots)]
+        return px + ox, py + oy
 
-    def model_states_cb(self, msg):
-        self.model_states = msg
+    def set_box_pose(self, name, x, y, z, yaw=0.0):
+        if self.set_state is None or not self.set_state.service_is_ready():
+            return False
+        st = EntityState()
+        st.name = name
+        st.pose = Pose()
+        st.pose.position.x = float(x)
+        st.pose.position.y = float(y)
+        st.pose.position.z = float(z)
+        st.pose.orientation.z = math.sin(yaw * 0.5)
+        st.pose.orientation.w = math.cos(yaw * 0.5)
+        # Kill leftover carry velocity so the box plants on the pad
+        st.twist.linear.x = 0.0
+        st.twist.linear.y = 0.0
+        st.twist.linear.z = 0.0
+        st.twist.angular.x = 0.0
+        st.twist.angular.y = 0.0
+        st.twist.angular.z = 0.0
+        st.reference_frame = 'world'
+        self.set_state.call_async(SetEntityState.Request(state=st))
+        return True
 
-    def robot_world_pose(self):
-        if self.model_states is None:
+    def best_box(self, color=None, name=None, any_bearing=False):
+        rp = self.robot_pose()
+        if rp is None or self.models is None:
             return None
-        try:
-            i = self.model_states.name.index('robot')
-        except ValueError:
-            return None
-        p = self.model_states.pose[i]
-        q = p.orientation
-        siny = 2.0 * (q.w * q.z + q.x * q.y)
-        cosy = 1.0 - 2.0 * (q.y * q.y + q.z * q.z)
-        return p.position.x, p.position.y, math.atan2(siny, cosy), q
-
-    def pick_nearest_box_model(self):
-        """Nearest Gazebo box_<color>_* to the robot in world frame."""
-        if self.carried is None or self.model_states is None:
-            return None
-        pose = self.robot_world_pose()
-        if pose is None:
-            return None
-        rx, ry, _, _ = pose
-        prefix = f'box_{self.carried}_'
-        best_name, best_d = None, float('inf')
-        for name, p in zip(self.model_states.name, self.model_states.pose):
-            if not name.startswith(prefix):
+        rx, ry, yaw, _ = rp
+        best = None
+        for n, p in zip(self.models.name, self.models.pose):
+            c = next((col for col in COLORS if n.startswith(f'box_{col}_')), None)
+            if c is None:
                 continue
-            d = math.hypot(p.position.x - rx, p.position.y - ry)
-            if d < best_d:
-                best_d = d
-                best_name = name
-        return best_name
+            if color and c != color:
+                continue
+            if name and n != name:
+                continue
+            # Don't re-pick boxes already delivered to their pad
+            if name is None and self.near_pad(c, p.position.x, p.position.y):
+                continue
+            dx, dy = p.position.x - rx, p.position.y - ry
+            dist = math.hypot(dx, dy)
+            if dist < 0.15 or dist > self.detect_range:
+                continue
+            brg = self.wrap(math.atan2(dy, dx) - yaw)
+            if name is None and not any_bearing and abs(brg) > self.fov:
+                continue
+            fwd = math.cos(yaw) * dx + math.sin(yaw) * dy
+            lat = -math.sin(yaw) * dx + math.cos(yaw) * dy
+            if best is None or dist < best['dist']:
+                best = {
+                    'name': n, 'color': c, 'dist': dist, 'bearing': brg,
+                    'fwd': fwd, 'lat': lat,
+                }
+        return best
 
-    def glue_box_to_robot(self):
-        """Keep carried box between the forks (Gazebo world frame)."""
-        if not HAS_GAZEBO_MSGS or not self.carried_model or self.set_state_cli is None:
-            return
-        if not self.set_state_cli.service_is_ready():
-            return
-        pose = self.robot_world_pose()
-        if pose is None:
-            return
-        rx, ry, yaw, q = pose
-        ox = self.carry_forward * math.cos(yaw)
-        oy = self.carry_forward * math.sin(yaw)
+    def in_fork_pocket(self, b):
+        return b is not None and (3.30 < b['fwd'] < 4.20) and (abs(b['lat']) < 0.50)
 
-        state = EntityState()
-        state.name = self.carried_model
-        state.pose = Pose()
-        state.pose.position.x = rx + ox
-        state.pose.position.y = ry + oy
-        state.pose.position.z = 0.30
-        state.pose.orientation = q
-        state.reference_frame = 'world'
-        self.set_state_cli.call_async(SetEntityState.Request(state=state))
+    def hold_box(self):
+        """Keep the already-forked box seated in the pocket (no far snap)."""
+        if not self.holding or not self.target or self.set_state is None:
+            return
+        if not self.set_state.service_is_ready():
+            return
+        self.hold_tick += 1
+        if self.hold_tick % 3 != 0:
+            return
+        rp = self.robot_pose()
+        if rp is None:
+            return
+        rx, ry, yaw, q = rp
+        st = EntityState()
+        st.name = self.target
+        st.pose = Pose()
+        st.pose.position.x = rx + self.carry_fwd * math.cos(yaw)
+        st.pose.position.y = ry + self.carry_fwd * math.sin(yaw)
+        st.pose.position.z = self.box_half
+        st.pose.orientation = q
+        st.reference_frame = 'world'
+        self.set_state.call_async(SetEntityState.Request(state=st))
+
+    def go_to(self, tx, ty, speed):
+        """Face goal then drive straight. Reverse only if about to hit something."""
+        rp = self.robot_pose()
+        if rp is None:
+            self.stop()
+            return float('inf')
+        rx, ry, yaw, _ = rp
+        dx, dy = tx - rx, ty - ry
+        dist = math.hypot(dx, dy)
+        brg = self.wrap(math.atan2(dy, dx) - yaw)
+        clear = self.front_obstacle(carrying=self.holding)
+
+        if self.avoid_t > 0:
+            self.avoid_t -= 1
+            self.drive(0.0, self.avoid_dir * 0.60)
+            return dist
+
+        if clear < 1.6:
+            if self.avoid_t == 0:
+                self.avoid_dir = self.open_side()
+                self.avoid_t = 25
+                self.turn_sign = 0
+            self.drive(0.0, self.avoid_dir * 0.60)
+            return dist
+
+        if abs(brg) > 0.45:
+            if self.turn_sign == 0:
+                self.turn_sign = 1 if brg > 0.0 else -1
+            self.drive(0.0, self.turn_sign * 0.50)
+            return dist
+        self.turn_sign = 0
+
+        self.drive(speed, 0.0)
+        return dist
 
     def tick(self):
         if self.state == 'searching':
-            self.set_wander(True)
-            self.send_gripper('open')
-            self.carried_model = None
-            if self.latest_color in self.pads:
-                self.carried = self.latest_color
-                self.lost_ticks = 0
-                self.set_wander(False)
-                self.stop_drive()
-                self.state = 'approaching'
-                self.get_logger().info(f'Saw {self.carried} — approaching')
+            self.holding = False
+            self.enable_wander(True)
+            self.gripper('open')
+            self.target = None
+            b = self.best_box()
+            if b is None:
+                return
+            if self.front() + 1.2 < b['fwd']:
+                return
+            self.color = b['color']
+            self.target = b['name']
+            self.lost_t = 0
+            self.enable_wander(False)
+            self.stop()
+            self.state = 'approaching'
+            self.get_logger().info(f"Target {b['color']} ({b['name']}) {b['dist']:.1f} m")
 
         elif self.state == 'approaching':
-            self.set_wander(False)
-            self.send_gripper('open')
-
-            seeing = self.latest_color == self.carried
-            if seeing:
-                self.lost_ticks = 0
-                offset = self.box_offset
-            else:
-                self.lost_ticks += 1
-                front_probe = self.front_distance()
-                # Keep committing if lidar still sees something close ahead
-                if self.lost_ticks > self.lost_limit and front_probe > 2.5:
-                    self.get_logger().warn('Lost box — searching again')
-                    self.carried = None
+            self.enable_wander(False)
+            self.gripper('open')
+            b = self.best_box(color=self.color, name=self.target, any_bearing=True)
+            if b is None:
+                b = self.best_box(color=self.color, any_bearing=True)
+                if b:
+                    self.target = b['name']
+            if b is None:
+                self.lost_t += 1
+                if self.lost_t > 60:
+                    self.get_logger().warn('Lost box')
+                    self.color = None
                     self.state = 'searching'
-                    self.set_wander(True)
-                    return
-                offset = self.last_offset
+                else:
+                    self.drive(0.0, 0.45)
+                return
+            self.lost_t = 0
 
-            front = self.front_distance()
-            ang = -self.turn_gain * offset
-            ang = max(-0.7, min(0.7, ang))
+            if self.front() + 1.0 < b['fwd'] and self.front() < 2.0:
+                self.drive(0.0, 0.55 if b['lat'] >= 0 else -0.55)
+                return
 
-            if abs(offset) > self.align_tol and front > self.grip_distance + 0.3:
-                self.drive(0.12, ang)
-            elif front > self.grip_distance:
-                self.drive(self.approach_speed, ang * 0.4)
-            else:
-                self.stop_drive()
-                self.send_gripper('close')
-                self.grip_ticks = 0
+            if self.in_fork_pocket(b):
+                self.stop()
+                self.gripper('close')
+                self.grip_t = 0
                 self.state = 'gripping'
                 self.get_logger().info(
-                    f'In range ({front:.2f} m) — gripping {self.carried}'
+                    f"In forks — clamping {b['color']} (fwd={b['fwd']:.2f})"
                 )
+                return
+
+            if abs(b['bearing']) > 0.35 and b['fwd'] > self.grip_fwd + 0.25:
+                self.drive(0.0, 0.50 if b['bearing'] > 0 else -0.50)
+            elif b['fwd'] > self.grip_fwd:
+                self.drive(0.40, 0.0)
+            elif abs(b['lat']) > self.lat_ok:
+                self.drive(0.0, 0.45 if b['lat'] > 0 else -0.45)
+            else:
+                self.drive(0.15, 0.0)
 
         elif self.state == 'gripping':
-            self.set_wander(False)
-            self.stop_drive()
-            self.send_gripper('close')
-            self.grip_ticks += 1
-            if self.grip_ticks == 5:
-                self.carried_model = self.pick_nearest_box_model()
-                if self.carried_model:
-                    self.get_logger().info(f'Carrying model {self.carried_model}')
-                else:
-                    self.get_logger().warn('No Gazebo box model found to attach')
-            if self.grip_ticks >= self.grip_hold_ticks:
+            self.enable_wander(False)
+            self.stop()
+            self.gripper('close')
+            self.grip_t += 1
+            if self.grip_t >= 8:
+                self.holding = True
+                self.hold_box()
+            if self.grip_t >= 18:
+                b = self.best_box(color=self.color, name=self.target, any_bearing=True)
+                if not self.in_fork_pocket(b):
+                    self.get_logger().warn('Pick failed — retry')
+                    self.holding = False
+                    self.gripper('open')
+                    self.color = None
+                    self.target = None
+                    self.state = 'searching'
+                    return
+                self.avoid_t = 0
+                self.stuck_t = 0
+                self.turn_sign = 0
+                self.last_goal_d = None
+                self.drop_xy = None  # pick next free on-pad slot
                 self.state = 'delivering'
-                self.goal_sent = False
-                self.send_to_pad()
+                px, py = self.pads[self.color]
+                self.get_logger().info(f'Got it — going to {self.color} pad ({px:.0f},{py:.0f})')
 
         elif self.state == 'delivering':
-            self.set_wander(False)
-            self.send_gripper('close')
-            self.glue_box_to_robot()
-            if not self.goal_sent:
-                self.send_to_pad()
+            self.enable_wander(False)
+            self.gripper('close')
+            self.hold_box()
+            # Drive to the exact on-pad slot we'll plant the box on
+            if self.drop_xy is None and self.color:
+                self.drop_xy = self.pad_drop_xy(self.color)
+            dx, dy = self.drop_xy if self.drop_xy else self.pads[self.color]
+            d = self.go_to(dx, dy, 0.80)
+            if d < self.pad_ok:
+                self.stop()
+                self.drop_t = 0
+                self.drop_turn = 0
+                self.state = 'dropping'
+                self.get_logger().info(
+                    f'At pad slot ({dx:.1f},{dy:.1f}) — dropping'
+                )
 
         elif self.state == 'dropping':
-            self.set_wander(False)
-            self.stop_drive()
-            self.send_gripper('open')
-            self.carried = None
-            self.carried_model = None
-            self.latest_color = 'none'
-            self.goal_sent = False
-            self.state = 'searching'
-            self.set_wander(True)
-            self.get_logger().info('Dropped — searching for next box')
+            # Plant box ON the pad under the claws → open → reverse clear → turn → wander
+            self.enable_wander(False)
+            self.holding = False
+            self.drop_t += 1
+
+            if self.drop_xy is None and self.color:
+                self.drop_xy = self.pad_drop_xy(self.color)
+
+            if self.drop_t == 1 and self.target and self.drop_xy:
+                self.drop_counts[self.color] += 1
+                self.set_box_pose(
+                    self.target, self.drop_xy[0], self.drop_xy[1], self.box_half
+                )
+                self.get_logger().info(
+                    f'Placed {self.color} on pad at ({self.drop_xy[0]:.1f},{self.drop_xy[1]:.1f}) '
+                    f'slot #{self.drop_counts[self.color]}'
+                )
+
+            self.gripper('open')
+
+            if self.drop_t <= 18:
+                # Hold planted pose while claws open so physics doesn't fling it
+                self.stop()
+                if self.target and self.drop_xy:
+                    self.set_box_pose(
+                        self.target, self.drop_xy[0], self.drop_xy[1], self.box_half
+                    )
+            elif self.drop_t <= 48:
+                # Reverse; keep pinning box for a bit so forks don't kick it off the pad
+                self.drive(-0.55, 0.0)
+                if self.drop_t <= 28 and self.target and self.drop_xy:
+                    self.set_box_pose(
+                        self.target, self.drop_xy[0], self.drop_xy[1], self.box_half
+                    )
+            elif self.drop_t <= 78:
+                if self.drop_turn == 0:
+                    self.drop_turn = self.open_side()
+                self.drive(0.0, self.drop_turn * 0.65)
+            else:
+                dropped = self.color
+                self.color = None
+                self.target = None
+                self.drop_xy = None
+                self.last_goal_d = None
+                self.avoid_t = 0
+                self.turn_sign = 0
+                self.drop_turn = 0
+                self.state = 'searching'
+                self.enable_wander(True)
+                self.get_logger().info(f'Dropped {dropped} — wandering for next')
 
 
 def main(args=None):
     rclpy.init(args=args)
     node = Mission()
-    # Multi-threaded so Gazebo service calls from the timer don't deadlock
-    executor = MultiThreadedExecutor()
-    executor.add_node(node)
+    ex = MultiThreadedExecutor()
+    ex.add_node(node)
     try:
-        executor.spin()
+        ex.spin()
     except KeyboardInterrupt:
         pass
     finally:
+        try:
+            node.holding = False
+            node.enable_wander(False)
+            node.stop()
+        except Exception:
+            pass
         node.destroy_node()
         if rclpy.ok():
             rclpy.shutdown()

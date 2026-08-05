@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Box detection from /gazebo/model_states (true world frame)."""
+"""Optional debug publisher — mission now does its own detection.
+
+Kept so Foxglove/RViz still show /detected_box_color if this node is run.
+Mission also publishes the same topic; prefer only one running.
+"""
 
 import math
 
@@ -19,12 +23,12 @@ class SimBoxDetector(Node):
         self.offset_pub = self.create_publisher(Float32, '/box_offset', 10)
         self.models = None
         self.create_subscription(ModelStates, '/gazebo/model_states', self.models_cb, 10)
-
-        # Wide FOV + no near cutoff so approach/grip does not "lose" the box.
-        self.detect_range = 8.0
-        self.fov_half_angle = 1.2
-        self.timer = self.create_timer(0.05, self.tick)
-        self.get_logger().info('sim_box_detector using /gazebo/model_states')
+        self.detect_range = 7.0
+        self.fov_half_angle = 0.9
+        self.create_timer(0.1, self.tick)
+        self.get_logger().info(
+            'sim_box_detector (debug). Mission has its own detector — stop this if both run.'
+        )
 
     def models_cb(self, msg):
         self.models = msg
@@ -39,17 +43,14 @@ class SimBoxDetector(Node):
         if self.models is None:
             self.publish('none', 0.0)
             return
-
         try:
             ri = self.models.name.index('robot')
         except ValueError:
             self.publish('none', 0.0)
             return
-
         rp = self.models.pose[ri]
         rx, ry = rp.position.x, rp.position.y
         yaw = self.yaw_from_quat(rp.orientation)
-
         best = None
         for name, pose in zip(self.models.name, self.models.pose):
             color = None
@@ -62,7 +63,7 @@ class SimBoxDetector(Node):
             dx = pose.position.x - rx
             dy = pose.position.y - ry
             dist = math.hypot(dx, dy)
-            if dist < 0.05 or dist > self.detect_range:
+            if dist < 0.2 or dist > self.detect_range:
                 continue
             bearing = math.atan2(dy, dx) - yaw
             while bearing > math.pi:
@@ -73,13 +74,11 @@ class SimBoxDetector(Node):
                 continue
             if best is None or dist < best[0]:
                 best = (dist, color, bearing)
-
         if best is None:
             self.publish('none', 0.0)
             return
         _, color, bearing = best
-        offset = max(-1.0, min(1.0, bearing / self.fov_half_angle))
-        self.publish(color, offset)
+        self.publish(color, max(-1.0, min(1.0, bearing / self.fov_half_angle)))
 
     def publish(self, color, offset):
         c = String()

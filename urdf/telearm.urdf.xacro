@@ -1,15 +1,20 @@
 <?xml version="1.0"?>
 <robot name="robot" xmlns:xacro="http://ros.org/wiki/xacro">
 
+  <!-- Overall forklift scale (meshes, wheels, nose). Gripper Z stays at box height. -->
+  <xacro:property name="S" value="1.35"/>
+  <xacro:property name="WR" value="${0.4175 * S}"/>
+
    <link name="body">
     <inertial>
-      <mass value="1"/>
-      <inertia ixx=".1" ixy="0" ixz="0" iyy=".1" iyz="0" izz=".1" />
+      <!-- Heavy enough not to yeet; light enough to accelerate -->
+      <mass value="90"/>
+      <inertia ixx="35" ixy="0" ixz="0" iyy="70" iyz="0" izz="80" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="file://$(find TeleARM)/meshes/body.STL" scale="1 1 1"/>
+        <mesh filename="file://$(find TeleARM)/meshes/body.STL" scale="${S} ${S} ${S}"/>
       </geometry>
       <material name="red">
         <color rgba="1 0 0 1"/> <!-- Black color -->
@@ -25,7 +30,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="file://$(find TeleARM)/meshes/window.STL" scale="1 1 1"/>
+        <mesh filename="file://$(find TeleARM)/meshes/window.STL" scale="${S} ${S} ${S}"/>
       </geometry>
       <material name="red">
         <color rgba="1 0 0 1"/> <!-- Black color -->
@@ -35,19 +40,19 @@
   <!-- Front Left -->
   <link name="front_left_wheel">
     <inertial>
-      <mass value="1"/>
-      <inertia ixx=".1" ixy="0" ixz="0" iyy=".1" iyz="0" izz=".1" />
+      <mass value="10"/>
+      <inertia ixx="0.6" ixy="0" ixz="0" iyy="0.6" iyz="0" izz="1.0" />
     </inertial>
     <collision>
-      <origin xyz="0 0 0.16" rpy="0 0 0"/>
+      <origin xyz="0 0 ${0.16 * S}" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.4175" length=".16"/>
+        <cylinder radius="${WR}" length="${0.16 * S}"/>
       </geometry>
     </collision>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="file://$(find TeleARM)/meshes/wheel.STL" scale="1 1 1"/>
+        <mesh filename="file://$(find TeleARM)/meshes/wheel.STL" scale="${S} ${S} ${S}"/>
       </geometry>
       <material name="black">
         <color rgba="0 0 0 1"/> <!-- Black color -->
@@ -57,19 +62,19 @@
   <!-- Front Right -->
   <link name="front_right_wheel">
     <inertial>
-      <mass value="1"/>
-      <inertia ixx=".1" ixy="0" ixz="0" iyy=".1" iyz="0" izz=".1" />
+      <mass value="10"/>
+      <inertia ixx="0.6" ixy="0" ixz="0" iyy="0.6" iyz="0" izz="1.0" />
     </inertial>
     <collision>
-      <origin xyz="0 0 0.16" rpy="0 0 0"/>
+      <origin xyz="0 0 ${0.16 * S}" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.4175" length=".16"/>
+        <cylinder radius="${WR}" length="${0.16 * S}"/>
       </geometry>
     </collision>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="file://$(find TeleARM)/meshes/wheel.STL" scale="1 1 1"/>
+        <mesh filename="file://$(find TeleARM)/meshes/wheel.STL" scale="${S} ${S} ${S}"/>
       </geometry>
       <material name="black">
         <color rgba="0 0 0 1"/> <!-- Black color -->
@@ -79,19 +84,19 @@
   <!-- Back Left -->
   <link name="back_left_wheel">
     <inertial>
-      <mass value="1"/>
-      <inertia ixx=".1" ixy="0" ixz="0" iyy=".1" iyz="0" izz=".1" />
+      <mass value="10"/>
+      <inertia ixx="0.6" ixy="0" ixz="0" iyy="0.6" iyz="0" izz="1.0" />
     </inertial>
     <collision>
-      <origin xyz="0 0 0.16" rpy="0 0 0"/>
+      <origin xyz="0 0 ${0.16 * S}" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.4175" length=".16"/>
+        <cylinder radius="${WR}" length="${0.16 * S}"/>
       </geometry>
     </collision>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="file://$(find TeleARM)/meshes/wheel.STL" scale="1 1 1"/>
+        <mesh filename="file://$(find TeleARM)/meshes/wheel.STL" scale="${S} ${S} ${S}"/>
       </geometry>
       <material name="black">
         <color rgba="0 0 0 1"/> <!-- Black color -->
@@ -101,88 +106,83 @@
   <!-- Back Right -->
   <link name="back_right_wheel">
     <inertial>
-      <mass value="1"/>
-      <inertia ixx=".1" ixy="0" ixz="0" iyy=".1" iyz="0" izz=".1" />
+      <mass value="10"/>
+      <inertia ixx="0.6" ixy="0" ixz="0" iyy="0.6" iyz="0" izz="1.0" />
     </inertial>
     <collision>
-      <origin xyz="0 0 0.16" rpy="0 0 0"/>
+      <origin xyz="0 0 ${0.16 * S}" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.4175" length=".16"/>
+        <cylinder radius="${WR}" length="${0.16 * S}"/>
       </geometry>
     </collision>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="file://$(find TeleARM)/meshes/wheel.STL" scale="1 1 1"/>
+        <mesh filename="file://$(find TeleARM)/meshes/wheel.STL" scale="${S} ${S} ${S}"/>
       </geometry>
       <material name="black">
         <color rgba="0 0 0 1"/> <!-- Black color -->
       </material>
     </visual>
   </link>
-  <!-- Simple underbody gripper: base + 2 fingers -->
+  <!-- Chunkier claw — open/close travel is obvious -->
   <link name="gripper_base">
     <inertial>
-      <mass value="0.3"/>
-      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+      <mass value="0.5"/>
+      <inertia ixx="0.02" ixy="0" ixz="0" iyy="0.02" iyz="0" izz="0.02"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <box size="0.5 1.0 0.05"/>
+        <box size="0.7 1.8 0.08"/>
       </geometry>
       <material name="green">
         <color rgba="0 1 0 1"/>
       </material>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="0.5 1.0 0.05"/>
-      </geometry>
-    </collision>
+    <!-- no collision on base — only fingers touch boxes (avoids yeeting them) -->
   </link>
 
   <link name="left_finger">
     <inertial>
-      <mass value="0.1"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <mass value="0.2"/>
+      <inertia ixx="0.002" ixy="0" ixz="0" iyy="0.002" iyz="0" izz="0.002"/>
     </inertial>
     <visual>
-      <origin xyz="0.35 0 0" rpy="0 0 0"/>
+      <origin xyz="0.45 0 0" rpy="0 0 0"/>
       <geometry>
-        <box size="1.0 0.06 0.10"/>
+        <box size="1.4 0.14 0.40"/>
       </geometry>
       <material name="yellow">
         <color rgba="1 0.85 0 1"/>
       </material>
     </visual>
     <collision>
-      <origin xyz="0.35 0 0" rpy="0 0 0"/>
+      <origin xyz="0.45 0 0" rpy="0 0 0"/>
       <geometry>
-        <box size="1.0 0.06 0.10"/>
+        <box size="1.4 0.14 0.40"/>
       </geometry>
     </collision>
   </link>
 
   <link name="right_finger">
     <inertial>
-      <mass value="0.1"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <mass value="0.2"/>
+      <inertia ixx="0.002" ixy="0" ixz="0" iyy="0.002" iyz="0" izz="0.002"/>
     </inertial>
     <visual>
-      <origin xyz="0.35 0 0" rpy="0 0 0"/>
+      <origin xyz="0.45 0 0" rpy="0 0 0"/>
       <geometry>
-        <box size="1.0 0.06 0.10"/>
+        <box size="1.4 0.14 0.40"/>
       </geometry>
       <material name="yellow">
         <color rgba="1 0.85 0 1"/>
       </material>
     </visual>
     <collision>
-      <origin xyz="0.35 0 0" rpy="0 0 0"/>
+      <origin xyz="0.45 0 0" rpy="0 0 0"/>
       <geometry>
-        <box size="1.0 0.06 0.10"/>
+        <box size="1.4 0.14 0.40"/>
       </geometry>
     </collision>
   </link>
@@ -194,62 +194,62 @@
   </joint>
 
   <joint name="body_to_front_left_wheel" type="continuous">
-    <origin xyz="1.505428 0.573211 0.055848" rpy="${-pi/2} 0 0"/>
+    <origin xyz="${1.505428 * S} ${0.573211 * S} ${0.055848 * S}" rpy="${-pi/2} 0 0"/>
     <parent link="body"/>
     <child link="front_left_wheel"/>
     <axis xyz="0 0 1"/>
   </joint>
 
   <joint name="body_to_front_right_wheel" type="continuous">
-    <origin xyz="1.505428 -0.573211 0.055848" rpy="${pi/2} 0 0"/>
+    <origin xyz="${1.505428 * S} ${-0.573211 * S} ${0.055848 * S}" rpy="${pi/2} 0 0"/>
     <parent link="body"/>
     <child link="front_right_wheel"/>
     <axis xyz="0 0 -1"/>
   </joint>
 
   <joint name="body_to_back_left_wheel" type="continuous">
-    <origin xyz="-1.505428 0.573211 0.055848" rpy="${-pi/2} 0 0"/>
+    <origin xyz="${-1.505428 * S} ${0.573211 * S} ${0.055848 * S}" rpy="${-pi/2} 0 0"/>
     <parent link="body"/>
     <child link="back_left_wheel"/>
     <axis xyz="0 0 1"/>
   </joint>
 
   <joint name="body_to_back_right_wheel" type="continuous">
-    <origin xyz="-1.505428 -0.573211 0.055848" rpy="${pi/2} 0 0"/>
+    <origin xyz="${-1.505428 * S} ${-0.573211 * S} ${0.055848 * S}" rpy="${pi/2} 0 0"/>
     <parent link="body"/>
     <child link="back_right_wheel"/>
     <axis xyz="0 0 -1"/>
   </joint>
 
-  <!-- Gripper under nose — keep clear of ground to avoid spawn yeet -->
+  <!-- Nose farther out (scaled); Z matches ~0.90 m box centers -->
   <joint name="body_to_gripper_base" type="fixed">
-    <origin xyz="2.35 0 0.22" rpy="0 0 0"/>
+    <origin xyz="${2.35 * S} 0 0.45" rpy="0 0 0"/>
     <parent link="body"/>
     <child link="gripper_base"/>
   </joint>
 
   <joint name="gripper_left" type="prismatic">
-    <origin xyz="0 0.08 0" rpy="0 0 0"/>
+    <origin xyz="0 0.16 0" rpy="0 0 0"/>
     <parent link="gripper_base"/>
     <child link="left_finger"/>
     <axis xyz="0 1 0"/>
-    <limit effort="20" velocity="0.2" lower="0.0" upper="0.4"/>
+    <!-- wide open vs tight close so claw motion is obvious -->
+    <limit effort="120" velocity="0.5" lower="0.0" upper="0.80"/>
   </joint>
 
   <joint name="gripper_right" type="prismatic">
-    <origin xyz="0 -0.08 0" rpy="0 0 0"/>
+    <origin xyz="0 -0.16 0" rpy="0 0 0"/>
     <parent link="gripper_base"/>
     <child link="right_finger"/>
     <axis xyz="0 -1 0"/>
-    <limit effort="20" velocity="0.2" lower="0.0" upper="0.4"/>
+    <limit effort="120" velocity="0.5" lower="0.0" upper="0.80"/>
   </joint>
 
   
 
   <link name="camera_link"/>
   <joint name="body_to_camera_link" type="fixed">
-    <!-- Lower + pitched down so ~0.55 m floor boxes fill the image -->
-    <origin xyz="2.15 0 0.45" rpy="0 -0.55 0"/>
+    <origin xyz="${2.15 * S} 0 0.55" rpy="0 -0.55 0"/>
     <parent link="body"/>
     <child link="camera_link"/>
   </joint>
@@ -257,7 +257,7 @@
   <!-- Keep a lidar for /scan (avoidance). Camera is Image-only. -->
   <link name="lidar_link"/>
   <joint name="body_to_lidar_link" type="fixed">
-    <origin xyz="2.1 0 0.7" rpy="0 0 0"/>
+    <origin xyz="${2.1 * S} 0 ${0.7 * S}" rpy="0 0 0"/>
     <parent link="body"/>
     <child link="lidar_link"/>
   </joint>
@@ -289,7 +289,7 @@
     <joint name="gripper_left">
       <command_interface name="position">
         <param name="min">0.0</param>
-        <param name="max">0.4</param>
+        <param name="max">0.80</param>
       </command_interface>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
@@ -297,7 +297,7 @@
     <joint name="gripper_right">
       <command_interface name="position">
         <param name="min">0.0</param>
-        <param name="max">0.4</param>
+        <param name="max">0.80</param>
       </command_interface>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
@@ -313,25 +313,45 @@
 
   <gazebo reference="body">
     <material>Gazebo/Red</material>
+    <selfCollide>false</selfCollide>
   </gazebo>
   <gazebo reference="window">
     <material>Gazebo/Black</material>
   </gazebo>
+  <!-- Front wheels are undriven — zero friction so they don't drag the car -->
   <gazebo reference="front_left_wheel">
     <material>Gazebo/Black</material>
-    <mu1 value="0.0"/>
-    <mu2 value="0.0"/>
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
   </gazebo>
   <gazebo reference="front_right_wheel">
     <material>Gazebo/Black</material>
-    <mu1 value="0.0"/>
-    <mu2 value="0.0"/>
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
   </gazebo>
   <gazebo reference="back_left_wheel">
     <material>Gazebo/Black</material>
+    <mu1>1.2</mu1>
+    <mu2>1.2</mu2>
   </gazebo>
   <gazebo reference="back_right_wheel">
     <material>Gazebo/Black</material>
+    <mu1>1.2</mu1>
+    <mu2>1.2</mu2>
+  </gazebo>
+
+  <!-- Grip friction — keep kp moderate so boxes don't get yeeted -->
+  <gazebo reference="left_finger">
+    <mu1>2.5</mu1>
+    <mu2>2.5</mu2>
+    <kp>1e4</kp>
+    <kd>10.0</kd>
+  </gazebo>
+  <gazebo reference="right_finger">
+    <mu1>2.5</mu1>
+    <mu2>2.5</mu2>
+    <kp>1e4</kp>
+    <kd>10.0</kd>
   </gazebo>
 
   <gazebo reference="camera_link">

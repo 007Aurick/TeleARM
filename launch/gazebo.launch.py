@@ -73,7 +73,7 @@ def launch_setup(context, *args, **kwargs):
             '-entity', 'robot',
             '-x', '0.0',
             '-y', '0.0',
-            '-z', '0.35',
+            '-z', '0.62',
             '-timeout', '180.0',
         ],
         output='screen',
