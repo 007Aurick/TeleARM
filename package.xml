@@ -10,17 +10,17 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
 
 
-
-  <exec_depend>rclpy</exec_depend>
-  <exec_depend>geometry_msgs</exec_depend>
-  <exec_depend>sensor_msgs</exec_depend>
-  <exec_depend>std_msgs</exec_depend>
-  <exec_depend>nav2_msgs</exec_depend>
+###All the ROS2 humble package lists needed to be used
+  <exec_depend>rclpy</exec_depend>#core ROS2 library, actual API used to talk to ROS
+  <exec_depend>geometry_msgs</exec_depend> #Holds data shapes related to position, orientation, and motion, e.g Twist
+  <exec_depend>sensor_msgs</exec_depend>#A message type package for sensor data --camera images, lidar scans
+  <exec_depend>std_msgs</exec_depend>#Message package for generic data types -- Bool, Int32, Float32, String, Float64MultiArray
+  <exec_depend>nav2_msgs</exec_depend>#Computes the path and drives it, given the sensor data
   <exec_depend>gazebo_msgs</exec_depend>
   <exec_depend>slam_toolbox</exec_depend>
-  <exec_depend>nav2_bringup</exec_depend>
-  <exec_depend>robot_state_publisher</exec_depend>
-  <exec_depend>joint_state_publisher_gui</exec_depend>
+  <exec_depend>nav2_bringup</exec_depend>#launches, starts Nav2 actually running
+  <exec_depend>robot_state_publisher</exec_depend> #Node that turns your URDF into a live, constantly updated 3D transform tree
+  <exec_depend>joint_state_publisher_gui</exec_depend>#uses sliders to test URDF file before any real joint-angle data exists
   <exec_depend>rviz2</exec_depend>
   <exec_depend>xacro</exec_depend>
  
