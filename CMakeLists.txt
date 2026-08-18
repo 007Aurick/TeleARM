@@ -18,7 +18,7 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}
 )
 
-#Copies your 6 Pythoon node files and marks each one as an executable, which makes ros2 run TeleARM <name> work 
+#Copies your 6 Python node files and marks each one as an executable, which makes ros2 run TeleARM <name> work 
 install(PROGRAMS
   scripts/diff_drive_publisher.py
   scripts/gripper_publisher.py
