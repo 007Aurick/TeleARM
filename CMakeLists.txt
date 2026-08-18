@@ -7,6 +7,7 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 
+#Copy these 6 folders from my source directory into the install directory, under the path share /TeleARM/
 install(DIRECTORY
   launch
   urdf
